@@ -1,0 +1,8 @@
+input/
+output/
+dev_tools/
+__pycache__/
+*.pyc
+.git/
+.env
+README.md

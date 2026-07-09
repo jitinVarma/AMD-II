@@ -4,6 +4,10 @@ actual frames) and style match (0-1, against the style's definition),
 printing per-style and average scores. Use this to A/B test style-prompt
 changes against a number instead of a vibe.
 
+The judge's vision model (JUDGE_VISION_MODEL) is pinned independently of
+whatever VISION_MODEL the pipeline itself is configured with, so before/after
+comparisons stay apples-to-apples even across a pipeline model change.
+
 Usage:
   FIREWORKS_API_KEY="key1,key2,key3" python3 -m dev_tools.judge_harness [tasks.json]
 """
@@ -28,6 +32,11 @@ from agent.vision import get_stage_a_description
 logging.basicConfig(level="INFO", format="%(asctime)s %(levelname)s %(name)s: %(message)s", stream=sys.stderr)
 logger = logging.getLogger("dev_tools.judge_harness")
 
+# Pinned independently of config.vision_model so before/after comparisons
+# stay apples-to-apples even if the pipeline's own VISION_MODEL changes
+# between runs -- the judge itself must not move.
+JUDGE_VISION_MODEL = os.environ.get("JUDGE_VISION_MODEL", "accounts/fireworks/models/qwen3p7-plus")
+
 _JUDGE_SYSTEM_PROMPT = """You are a strict, impartial judge scoring a video \
 caption against the actual video frames and a target writing style.
 
@@ -42,7 +51,7 @@ definition given below (not just superficially), while staying natural? \
 Respond with ONLY a JSON object: {"accuracy": <float>, "style_match": <float>, "reasoning": "<one short sentence>"}"""
 
 
-def _judge_caption(client: FireworksClient, config: Config, data_uris: list[str], style: str, caption: str, task_id: str) -> dict:
+def _judge_caption(client: FireworksClient, config: Config, timestamped_frames: list[tuple[float, str]], style: str, caption: str, task_id: str) -> dict:
     content = [
         {
             "type": "text",
@@ -50,11 +59,13 @@ def _judge_caption(client: FireworksClient, config: Config, data_uris: list[str]
                 f"Target style: {style}\n"
                 f"Style definition: {style_definition(style)}\n\n"
                 f"Candidate caption: \"{caption}\"\n\n"
-                "Here are the actual video frames, sampled chronologically. Score the caption."
+                "Here are the actual video frames, sampled chronologically and labeled with "
+                "timestamps. Score the caption."
             ),
         }
     ]
-    for uri in data_uris:
+    for t, uri in timestamped_frames:
+        content.append({"type": "text", "text": f"[frame at t={t:.1f}s]"})
         content.append({"type": "image_url", "image_url": {"url": uri}})
 
     messages = [
@@ -63,7 +74,7 @@ def _judge_caption(client: FireworksClient, config: Config, data_uris: list[str]
     ]
 
     try:
-        raw = client.chat_completion(messages=messages, model=config.vision_model, max_tokens=200, temperature=0.0)
+        raw = client.chat_completion(messages=messages, model=JUDGE_VISION_MODEL, max_tokens=200, temperature=0.0)
     except Exception as exc:
         logger.error("[%s/%s] judge call failed: %s", task_id, style, exc)
         return {"accuracy": None, "style_match": None, "reasoning": f"judge call failed: {exc}"}
@@ -89,6 +100,9 @@ def main() -> None:
     config.validate()
     client = FireworksClient(config)
 
+    print(f"Pipeline vision_model={config.vision_model}  text_model={config.text_model}")
+    print(f"Judge (pinned) vision_model={JUDGE_VISION_MODEL}")
+
     all_scores: dict[str, list[tuple[float, float]]] = {}
 
     for task in tasks:
@@ -99,17 +113,18 @@ def main() -> None:
         with tempfile.TemporaryDirectory(prefix=f"judge_{task_id}_") as tmpdir:
             video_path = os.path.join(tmpdir, "clip.mp4")
             download_video(task["video_url"], video_path, timeout=config.download_timeout)
-            data_uris = extract_frames_as_data_uris(
+            timestamped_frames = extract_frames_as_data_uris(
                 video_path,
-                num_frames=config.num_frames,
+                num_frames_override=config.num_frames_override,
                 max_long_side=config.max_long_side,
                 qscale=config.jpeg_qscale,
                 scene_timeout=config.ffmpeg_scene_timeout,
                 frame_timeout=config.ffmpeg_frame_timeout,
                 ffprobe_timeout=config.ffprobe_timeout,
+                scene_change_threshold=config.scene_change_threshold,
             )
 
-        description = get_stage_a_description(client, data_uris, config, task_id=task_id)
+        description = get_stage_a_description(client, timestamped_frames, config, task_id=task_id)
         print("Stage A description:")
         print(json.dumps(description, indent=2, ensure_ascii=False))
 
@@ -122,7 +137,7 @@ def main() -> None:
         call_delay = float(os.environ.get("JUDGE_CALL_DELAY_SECONDS", "2.0"))
         for style, caption in captions.items():
             time.sleep(call_delay)
-            score = _judge_caption(client, config, data_uris, style, caption, task_id)
+            score = _judge_caption(client, config, timestamped_frames, style, caption, task_id)
             all_scores.setdefault(style, [])
             print(f"\n  [{style}] {caption}")
             print(f"    accuracy={score['accuracy']}  style_match={score['style_match']}  reasoning={score['reasoning']}")

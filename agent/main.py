@@ -49,19 +49,20 @@ def process_task(task: dict, client: FireworksClient, config: Config) -> dict:
             )
 
             logger.info("[%s] extracting frames", task_id)
-            data_uris = extract_frames_as_data_uris(
+            timestamped_frames = extract_frames_as_data_uris(
                 video_path,
-                num_frames=config.num_frames,
+                num_frames_override=config.num_frames_override,
                 max_long_side=config.max_long_side,
                 qscale=config.jpeg_qscale,
                 scene_timeout=config.ffmpeg_scene_timeout,
                 frame_timeout=config.ffmpeg_frame_timeout,
                 ffprobe_timeout=config.ffprobe_timeout,
+                scene_change_threshold=config.scene_change_threshold,
             )
-            logger.info("[%s] extracted %d frames", task_id, len(data_uris))
+            logger.info("[%s] extracted %d frames", task_id, len(timestamped_frames))
 
         logger.info("[%s] stage A: describing scene", task_id)
-        description = get_stage_a_description(client, data_uris, config, task_id=task_id)
+        description = get_stage_a_description(client, timestamped_frames, config, task_id=task_id)
 
         logger.info("[%s] stage B: generating %d styles", task_id, len(styles))
         captions_raw = get_stage_b_captions(client, description, styles, config, task_id=task_id)
@@ -72,7 +73,7 @@ def process_task(task: dict, client: FireworksClient, config: Config) -> dict:
         logger.info("[%s] done in %.1fs", task_id, elapsed)
         return {"task_id": task_id, "captions": captions}
 
-    except (DownloadError, FrameExtractionError) as exc:
+    except (DownloadError, FrameExtractionError, FileNotFoundError, RuntimeError) as exc:
         logger.error("[%s] pipeline failed (%s): %s", task_id, type(exc).__name__, exc)
         return {"task_id": task_id, "captions": _ultimate_fallback_captions(styles)}
     except Exception:

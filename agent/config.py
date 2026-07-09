@@ -33,6 +33,20 @@ def _env_str(name: str, default: str) -> str:
     return value if value else default
 
 
+def _env_int_optional(name: str) -> int | None:
+    """Returns None if the env var is unset/empty (distinct from "explicitly
+    set to some value"), so callers can tell "use the adaptive default"
+    apart from "the user really does want this number."
+    """
+    raw = os.environ.get(name)
+    if not raw:
+        return None
+    try:
+        return int(raw)
+    except ValueError:
+        return None
+
+
 @dataclass
 class Config:
     input_path: str = field(default_factory=lambda: _env_str("INPUT_PATH", "/input/tasks.json"))
@@ -46,13 +60,26 @@ class Config:
     # NOTE: as of this writing (2026-07), Fireworks' serverless catalog has
     # moved on from the Qwen2.5-VL / Llama-3.3 generation named in the
     # original brief -- those return HTTP 404 "not found/deployed" on
-    # serverless now. Verified live against /inference/v1/models for this
-    # account: kimi-k2p6 is the only consistently-working vision-capable
-    # serverless model (kimi-k2p5 returns persistent 500s -- likely being
-    # sunset). glm-5p2 is a strong dedicated text model, verified working.
+    # serverless now. Neither Qwen3-VL (235B/30B/32B/8B) nor Qwen2.5-VL are
+    # serverless-deployed on this account (deployedModelRefs: [], confirmed
+    # 404 on direct call) -- they'd need on-demand dedicated deployments,
+    # out of scope for this pipeline. qwen3p7-plus is NOT listed in either
+    # /inference/v1/models or the paginated accounts catalog, but IS
+    # genuinely callable and vision-capable (verified via direct probe) --
+    # neither catalog endpoint is fully authoritative; direct smoke-testing
+    # is the only reliable signal. Head-to-head smoke test against the
+    # former default (kimi-k2p6) on real on-screen-text reading: qwen3p7-plus
+    # read a building sign exactly right at full resolution ("KOREA ILLIES
+    # ENGINEERING") plus correctly identified a real Korean apartment brand
+    # name and street signage; kimi-k2p6 hallucinated a different building
+    # entirely at the same resolution. qwen3p7-plus was also consistently
+    # faster (~2.2-3.2s vs ~3.2-4.9s) across single-image, multi-image, and
+    # hi-res tests, and correctly handles multi-image requests (our Stage A
+    # sends 7-10 frames per call). glm-5p2 remains the dedicated text model,
+    # verified working.
     vision_model: str = field(
         default_factory=lambda: _env_str(
-            "VISION_MODEL", "accounts/fireworks/models/kimi-k2p6"
+            "VISION_MODEL", "accounts/fireworks/models/qwen3p7-plus"
         )
     )
     text_model: str = field(
@@ -60,6 +87,11 @@ class Config:
             "TEXT_MODEL", "accounts/fireworks/models/glm-5p2"
         )
     )
+    # Optional last-resort Stage-A fallback (agent/vision.py): only used if
+    # GOOGLE_API_KEY is set AND every Fireworks vision attempt already
+    # failed for a clip. gemini-3-flash-preview has hit free-tier quota
+    # limits in testing -- use a paid key if relying on this path.
+    gemini_model: str = field(default_factory=lambda: _env_str("GEMINI_MODEL", "gemini-3-flash-preview"))
     # Both default models are "thinking" models that emit a separate
     # reasoning_content field before content when reasoning is enabled.
     # We don't need chain-of-thought for grounded description/captioning,
@@ -68,7 +100,10 @@ class Config:
     # "" to omit the param entirely (needed for models that reject it).
     reasoning_effort: str = field(default_factory=lambda: _env_str("REASONING_EFFORT", "none"))
 
-    num_frames: int = field(default_factory=lambda: _env_int("NUM_FRAMES", 10))
+    # Duration-adaptive by default (~1 frame per 9s, floor 6, cap 14 --
+    # see agent/frames.py:adaptive_frame_count). Setting NUM_FRAMES
+    # explicitly overrides adaptation entirely and pins an exact count.
+    num_frames_override: int | None = field(default_factory=lambda: _env_int_optional("NUM_FRAMES"))
     max_workers: int = field(default_factory=lambda: _env_int("MAX_WORKERS", 4))
 
     download_timeout: int = field(default_factory=lambda: _env_int("DOWNLOAD_TIMEOUT", 60))
@@ -87,6 +122,11 @@ class Config:
     ffmpeg_scene_timeout: int = field(default_factory=lambda: _env_int("FFMPEG_SCENE_TIMEOUT", 30))
     ffprobe_timeout: int = field(default_factory=lambda: _env_int("FFPROBE_TIMEOUT", 15))
     ffmpeg_frame_timeout: int = field(default_factory=lambda: _env_int("FFMPEG_FRAME_TIMEOUT", 20))
+    # Bhattacharyya-distance threshold for opencv scene-change detection in
+    # agent/frames.py -- empirically tuned, see that module for the tuning
+    # data (0.15 sits between ~0.1 for continuous real clips and ~0.21 for
+    # an actual cut in a synthetic test).
+    scene_change_threshold: float = field(default_factory=lambda: _env_float("SCENE_CHANGE_THRESHOLD", 0.15))
 
     # Whole-batch budget. Contract cap is 10 minutes; we stop starting new
     # work earlier and reserve time to flush fallbacks + write output.

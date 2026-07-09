@@ -44,7 +44,7 @@ machine's architecture:
 ```bash
 docker buildx build --platform linux/amd64 \
   --build-arg FIREWORKS_API_KEY="key1,key2,key3" \
-  --build-arg VISION_MODEL="accounts/fireworks/models/kimi-k2p6" \
+  --build-arg VISION_MODEL="accounts/fireworks/models/qwen3p7-plus" \
   --build-arg TEXT_MODEL="accounts/fireworks/models/glm-5p2" \
   -t video-captioning-agent:submission \
   --load .
@@ -95,7 +95,7 @@ e.g. for Docker Hub: `docker tag video-captioning-agent:submission yourusername/
 | Var | Default | Purpose |
 |---|---|---|
 | `FIREWORKS_API_KEY` | *(required)* | comma-separated Fireworks keys |
-| `VISION_MODEL` | `accounts/fireworks/models/kimi-k2p6` | Stage A VLM (verified live against this account's serverless catalog -- see note below) |
+| `VISION_MODEL` | `accounts/fireworks/models/qwen3p7-plus` | Stage A VLM (verified live against this account's serverless catalog -- see note below) |
 | `TEXT_MODEL` | `accounts/fireworks/models/glm-5p2` | Stage B text model |
 | `REASONING_EFFORT` | `none` | both default models are "thinking" models; `none` skips chain-of-thought for lower latency/cost on this grounded-captioning task |
 | `NUM_FRAMES` | `10` | frames sampled per clip |
@@ -103,15 +103,24 @@ e.g. for Docker Hub: `docker tag video-captioning-agent:submission yourusername/
 | `TOTAL_BUDGET_SECONDS` | `540` | whole-batch soft deadline (contract cap is 600s) |
 | `MAX_LONG_SIDE` | `768` | frame downscale target (px, long side) |
 | `INPUT_PATH` / `OUTPUT_PATH` | `/input/tasks.json` / `/output/results.json` | I/O paths |
+| `GOOGLE_API_KEY` | *(unset -- optional)* | enables an optional last-resort Stage-A fallback via Gemini, only invoked if every Fireworks vision attempt fails for a clip. Fully optional: the container works with no Google key at all. |
+| `GEMINI_MODEL` | `gemini-3-flash-preview` | model used by the optional Gemini fallback. **Note:** this model has hit free-tier quota limits in testing -- use a paid Google API key if you want this fallback to be reliable under real load. |
 
 **Model note:** the Qwen2.5-VL / Llama-3.3 model IDs commonly referenced in \
 older Fireworks docs/blog posts are no longer deployed on serverless (they \
-404). Verified live via `GET /inference/v1/models` against this account's \
-key: `kimi-k2p6` is the only consistently-working vision-capable serverless \
-model at present (`kimi-k2p5` returns persistent 500s and appears to be \
-being sunset); `glm-5p2` is a strong, currently-working dedicated text \
-model. Re-verify against your own account before relying on these -- \
-serverless catalogs change.
+404). Neither is Qwen3-VL (235B/30B/32B/8B) on this account -- it exists in \
+Fireworks' catalog but isn't serverless-deployed (`deployedModelRefs: []`, \
+confirmed via direct call), so it would require an on-demand dedicated \
+deployment. `qwen3p7-plus` doesn't appear in either the `/inference/v1/models` \
+listing or the paginated accounts catalog, but IS genuinely callable and \
+vision-capable -- neither catalog endpoint is fully authoritative for this \
+account; direct smoke-testing is the only reliable signal. Head-to-head \
+against `kimi-k2p6` on real on-screen-text reading, `qwen3p7-plus` read a \
+building sign exactly right at full resolution where `kimi-k2p6` \
+hallucinated a different building, and was consistently faster too. \
+`glm-5p2` remains a strong, working dedicated text model. Re-verify against \
+your own account before relying on any of this -- serverless catalogs \
+change, and neither catalog-listing endpoint can be fully trusted.
 
 ## Dev-only tools (not part of the container)
 
@@ -119,12 +128,10 @@ serverless catalogs change.
 is for local iteration only:
 
 - `dev_tools/compare_models.py` — runs the sample clips through vision
-  pipeline variants (default: `kimi-k2p6` with reasoning on vs off, since
-  it's currently the only working vision model on serverless for this
-  account -- set `CANDIDATE_VISION_MODELS` to a comma-separated list of
-  model IDs to compare real alternatives if/when more become available) at
-  fixed frame count/resolution, printing Stage-A descriptions and final
-  captions side by side.
+  pipeline variants (default: the current `VISION_MODEL` with reasoning on
+  vs off) at fixed frame count/resolution, printing Stage-A descriptions and
+  final captions side by side -- set `CANDIDATE_VISION_MODELS` to a
+  comma-separated list of model IDs to compare real alternatives directly.
 - `dev_tools/judge_harness.py` — an LLM-judge that scores each caption's
   accuracy and style match (0-1 each) against the clip's frames, so prompt
   changes can be evaluated by a number rather than a vibe.

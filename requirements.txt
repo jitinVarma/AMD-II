@@ -1,1 +1,7 @@
 requests>=2.31,<3
+# Optional: only used by the Gemini last-resort Stage-A fallback
+# (agent/vision.py) when GOOGLE_API_KEY is set. The import is defensive --
+# the container starts and runs fine on Fireworks alone without this.
+google-genai>=0.3,<1
+# Used for scene-change detection in frame sampling (agent/frames.py).
+opencv-python-headless>=4.9,<5

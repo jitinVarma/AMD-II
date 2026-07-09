@@ -88,19 +88,22 @@ def _uniform_timestamps(duration: float, count: int) -> list[float]:
     return [start + i * step for i in range(count)]
 
 
+_PREVIEW_W = 160
+_PREVIEW_H = 90
+
+
 def _detect_scene_changes(
     video_path: str,
     duration: float,
     sample_fps: float = 2.0,
-    preview_width: int = 160,
     threshold: float = 0.15,
     max_scan_seconds: float = 20.0,
 ) -> list[tuple[float, float]]:
     """Cheap low-res grayscale histogram-diff scan for scene-change
     timestamps. Returns (timestamp, magnitude) pairs. Never raises -- any
-    failure (unreadable video for opencv specifically, codec issue, etc)
-    just yields no change points, which degrades to pure uniform sampling
-    exactly like a genuinely static/single-shot clip would.
+    failure (ffmpeg missing, unreadable video, pipe error) just yields no
+    change points, which degrades to pure uniform sampling exactly like a
+    genuinely static/single-shot clip would.
 
     threshold=0.15 empirically tuned against the 3 sample clips (all single
     continuous shots, no cuts) and a synthetic hard-cut test video: the 3
@@ -108,57 +111,75 @@ def _detect_scene_changes(
     consecutive 2fps samples (yielding 0 change points, as required), while
     an actual scene cut in the synthetic test produced ~0.21 (correctly
     detected). 0.15 sits cleanly between the two.
+
+    Speed note: this used to open the FULL-RESOLUTION video via
+    cv2.VideoCapture and decode every native-fps frame in a Python loop
+    just to discard all but ~1-in-N of them -- expensive for UHD source
+    clips (profiled as the single biggest contributor to per-clip extraction
+    time). This version instead has ffmpeg itself downscale+drop frames to
+    a tiny 160x90 @ 2fps grayscale raw stream (fast, single optimized C
+    pipeline, never materializes a full-res frame in Python at all) and
+    reads that directly off a pipe -- no temp file, no OpenCV VideoCapture.
     """
-    cap = cv2.VideoCapture(video_path)
-    if not cap.isOpened():
-        logger.warning("opencv could not open %s for scene detection; falling back to uniform sampling", video_path)
-        return []
+    frame_size = _PREVIEW_W * _PREVIEW_H
+    cmd = [
+        "ffmpeg", "-i", video_path,
+        "-vf", f"scale={_PREVIEW_W}:{_PREVIEW_H}:flags=fast_bilinear,fps={sample_fps}",
+        "-pix_fmt", "gray", "-f", "rawvideo",
+        "-an", "-sn", "-loglevel", "error",
+        "-",
+    ]
 
     try:
-        src_fps = cap.get(cv2.CAP_PROP_FPS) or 25.0
-        if src_fps <= 0:
-            src_fps = 25.0
-        frame_interval = max(1, round(src_fps / sample_fps))
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+    except OSError as exc:
+        logger.warning("ffmpeg preview pipe failed to launch for %s: %s; falling back to uniform sampling", video_path, exc)
+        return []
 
-        changes: list[tuple[float, float]] = []
-        prev_hist = None
-        frame_idx = 0
-        start_time = time.monotonic()
+    changes: list[tuple[float, float]] = []
+    prev_hist = None
+    frame_idx = 0
+    start_time = time.monotonic()
 
+    try:
         while True:
             if time.monotonic() - start_time > max_scan_seconds:
                 logger.warning("scene detection scan exceeded %.0fs budget on %s; using changes found so far",
                                 max_scan_seconds, video_path)
                 break
 
-            ret, frame = cap.read()
-            if not ret:
+            raw = proc.stdout.read(frame_size)
+            if len(raw) < frame_size:
                 break
 
-            if frame_idx % frame_interval == 0:
-                t = frame_idx / src_fps
-                h, w = frame.shape[:2]
-                if w > 0:
-                    scale = preview_width / w
-                    small = cv2.resize(frame, (preview_width, max(1, int(h * scale))))
-                    gray = cv2.cvtColor(small, cv2.COLOR_BGR2GRAY)
-                    hist = cv2.calcHist([gray], [0], None, [64], [0, 256])
-                    cv2.normalize(hist, hist, 0, 1, cv2.NORM_MINMAX)
+            gray = np.frombuffer(raw, dtype=np.uint8).reshape(_PREVIEW_H, _PREVIEW_W)
+            hist = cv2.calcHist([gray], [0], None, [64], [0, 256])
+            cv2.normalize(hist, hist, 0, 1, cv2.NORM_MINMAX)
 
-                    if prev_hist is not None:
-                        diff = float(cv2.compareHist(prev_hist, hist, cv2.HISTCMP_BHATTACHARYYA))
-                        if diff > threshold:
-                            changes.append((t, diff))
-                    prev_hist = hist
-
+            t = frame_idx / sample_fps
+            if prev_hist is not None:
+                diff = float(cv2.compareHist(prev_hist, hist, cv2.HISTCMP_BHATTACHARYYA))
+                if diff > threshold:
+                    changes.append((t, diff))
+            prev_hist = hist
             frame_idx += 1
-
-        return changes
-    except cv2.error as exc:
-        logger.warning("opencv error during scene detection on %s: %s; falling back to uniform sampling", video_path, exc)
-        return []
+    except Exception as exc:
+        logger.warning("scene detection pipe read failed for %s: %s; using changes found so far", video_path, exc)
     finally:
-        cap.release()
+        try:
+            proc.stdout.close()
+        except Exception:
+            pass
+        try:
+            proc.kill()
+        except Exception:
+            pass
+        try:
+            proc.wait(timeout=5)
+        except Exception:
+            pass
+
+    return changes
 
 
 def _select_timestamps(
@@ -206,7 +227,55 @@ def _select_timestamps(
         if not final or t - final[-1] >= min_gap:
             final.append(t)
 
+    # HARD FLOOR -- the LAST clamp, after scene-aware placement AND the
+    # min_gap dedup above. target_count is already >= 6 in the adaptive case
+    # (adaptive_frame_count's own floor), but min_gap dedup can still
+    # undershoot it on short clips (e.g. a 6s clip can't fit 6 points a full
+    # 2s apart). When that happens, this is non-negotiable: relax spacing --
+    # not target count -- by repeatedly inserting a point into the current
+    # largest gap (deterministic, always makes progress) until target_count
+    # is reached or the clip's duration is too short to support that many
+    # distinct instants at all (graceful degradation, not a crash: returns
+    # however many distinct timestamps actually exist).
+    if len(final) < target_count:
+        logger.info(
+            "only %d frames after normal placement (duration=%.1fs, target=%d) -- "
+            "filling to the hard floor via largest-gap insertion",
+            len(final), duration, target_count,
+        )
+        final = _fill_to_count_via_largest_gap(final, target_count, duration)
+
     return final[:target_count]
+
+
+def _fill_to_count_via_largest_gap(existing: list[float], target_count: int, duration: float) -> list[float]:
+    """Repeatedly inserts a point into the middle of the current largest gap
+    (including the boundaries 0 and duration) until `target_count` distinct
+    points are reached. Deterministic and always makes progress -- no
+    probabilistic grid-search near-misses. Stops early (returning fewer than
+    target_count) only if the clip's duration is genuinely too short to fit
+    any more distinct instants at floating-point resolution.
+    """
+    points = sorted(existing) if existing else []
+    if not points:
+        return _uniform_timestamps(duration, target_count)
+
+    while len(points) < target_count:
+        bounds = [0.0] + points + [duration]
+        best_gap = -1.0
+        best_mid = None
+        for i in range(len(bounds) - 1):
+            left, right = bounds[i], bounds[i + 1]
+            gap = right - left
+            if gap > best_gap:
+                best_gap = gap
+                best_mid = (left + right) / 2.0
+        if best_mid is None or best_gap < 1e-6:
+            break
+        points.append(best_mid)
+        points.sort()
+
+    return points
 
 
 def _extract_single_frame(video_path: str, timestamp: float, out_path: str, max_long_side: int, qscale: int, timeout: int) -> bool:

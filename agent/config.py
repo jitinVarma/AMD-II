@@ -92,6 +92,13 @@ class Config:
     # failed for a clip. gemini-3-flash-preview has hit free-tier quota
     # limits in testing -- use a paid key if relying on this path.
     gemini_model: str = field(default_factory=lambda: _env_str("GEMINI_MODEL", "gemini-3-flash-preview"))
+    # Optional Stage-B candidate diversity source (agent/styling.py), only
+    # used when SPLIT_GENERATORS=true. Resolved via current Gemini API docs
+    # (Gemma has moved to v4: gemma-4-26b-a4b-it / gemma-4-31b-it) -- NOT
+    # live-verified, no Google key was available this session. Same shared
+    # GOOGLE_API_KEY/quota caveat as the Stage-A Gemini fallback.
+    gemma_model: str = field(default_factory=lambda: _env_str("GEMMA_MODEL", "gemma-4-26b-a4b-it"))
+    split_generators: bool = field(default_factory=lambda: _env_str("SPLIT_GENERATORS", "false").lower() == "true")
     # Both default models are "thinking" models that emit a separate
     # reasoning_content field before content when reasoning is enabled.
     # We don't need chain-of-thought for grounded description/captioning,
@@ -128,19 +135,39 @@ class Config:
     # an actual cut in a synthetic test).
     scene_change_threshold: float = field(default_factory=lambda: _env_float("SCENE_CHANGE_THRESHOLD", 0.15))
 
-    # Whole-batch budget. Contract cap is 10 minutes; we stop starting new
-    # work earlier and reserve time to flush fallbacks + write output.
-    total_budget_seconds: float = field(default_factory=lambda: _env_float("TOTAL_BUDGET_SECONDS", 540.0))
+    # Whole-batch budget. Contract cap is 10 minutes; 480s (8min) is a
+    # deliberate buffer under that cap -- Stage B's per-style isolated
+    # generation + judge pass does more API calls per clip than the old
+    # shared-draft design, so this leaves more headroom for the degradation
+    # ladder (agent/styling.py) to manage quality-vs-time before the final
+    # write-and-exit safety net (agent/main.py) ever has to fire.
+    total_budget_seconds: float = field(default_factory=lambda: _env_float("TOTAL_BUDGET_SECONDS", 480.0))
 
     vision_max_tokens: int = field(default_factory=lambda: _env_int("VISION_MAX_TOKENS", 700))
     text_max_tokens: int = field(default_factory=lambda: _env_int("TEXT_MAX_TOKENS", 700))
-    # Draft pass: higher temperature for genuine creative variance -- the
-    # critique pass (not a low temperature) is what now guards against
-    # invented/generic/formulaic output, so we can afford more spark here.
-    text_temperature: float = field(default_factory=lambda: _env_float("TEXT_TEMPERATURE", 0.9))
-    # Critique pass: lower temperature -- this step is about precise,
-    # consistent rule-checking and rewriting, not creativity.
-    text_critique_temperature: float = field(default_factory=lambda: _env_float("TEXT_CRITIQUE_TEMPERATURE", 0.4))
+    # Stage B per-style isolated generation temperatures (agent/styling.py):
+    # formal gets one low-temperature candidate (precision over variety);
+    # the three humor styles get multiple high-temperature candidates
+    # (variety matters -- the judge pass picks the best one).
+    formal_temperature: float = field(default_factory=lambda: _env_float("FORMAL_TEMPERATURE", 0.3))
+    humor_temperature: float = field(default_factory=lambda: _env_float("HUMOR_TEMPERATURE", 1.0))
+    # Judge pass (replaces the old shared critique pass): vetoes candidates
+    # that invent details or fail the cross-style cover test, scores
+    # survivors, returns the winner. Kimi K2.6, resolved live to this
+    # account's working model ID (also used as the Stage-A fallback
+    # candidate historically -- kept as a config default here since the
+    # user asked for it explicitly, independent of VISION_MODEL).
+    judge_model: str = field(
+        default_factory=lambda: _env_str("JUDGE_MODEL", "accounts/fireworks/models/kimi-k2p6")
+    )
+    judge_temperature: float = field(default_factory=lambda: _env_float("JUDGE_TEMPERATURE", 0.0))
+    # Higher than text_max_tokens on purpose: the judge must return veto
+    # verdicts + reasoning + a score for up to 4 candidates in one JSON
+    # response. Found via validation that text_max_tokens=700 truncates this
+    # mid-JSON (unparseable -> spurious regenerate-once -> spurious template
+    # fallback, even when the actual candidates were fine) -- this is sized
+    # with real headroom instead of just bumping it slightly.
+    judge_max_tokens: int = field(default_factory=lambda: _env_int("JUDGE_MAX_TOKENS", 1400))
 
     def validate(self) -> None:
         if not self.api_keys:

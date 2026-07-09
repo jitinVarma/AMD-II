@@ -9,6 +9,7 @@ import threading
 import time
 
 import requests
+from requests.adapters import HTTPAdapter
 
 logger = logging.getLogger("agent.fireworks")
 
@@ -48,6 +49,18 @@ class FireworksClient:
         self.config = config
         self._rotator = _KeyRotator(config.api_keys)
         self._session = requests.Session()
+        # Stage B's per-style isolated generation fans out up to (1 formal +
+        # 3 humor styles x 4 candidates) = 13 concurrent calls per clip,
+        # times MAX_WORKERS concurrent clips -- observed under load spamming
+        # "Connection pool is full, discarding connection" with the
+        # requests/urllib3 default pool size (10), forcing costly reconnects
+        # instead of reusing keep-alive connections. Size the pool to real
+        # concurrency and scale it with MAX_WORKERS so raising workers for a
+        # larger batch doesn't choke it again.
+        pool_maxsize = max(40, config.max_workers * 13 + 10)
+        adapter = HTTPAdapter(pool_connections=10, pool_maxsize=pool_maxsize)
+        self._session.mount("https://", adapter)
+        self._session.mount("http://", adapter)
 
     def chat_completion(
         self,

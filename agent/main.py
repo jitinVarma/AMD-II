@@ -33,7 +33,7 @@ def _ultimate_fallback_captions(styles: list[str]) -> dict:
     return {s: ULTIMATE_FALLBACKS.get(s, "Unable to generate a caption for this clip.") for s in styles}
 
 
-def process_task(task: dict, client: FireworksClient, config: Config) -> dict:
+def process_task(task: dict, client: FireworksClient, config: Config, deadline: float) -> dict:
     task_id = task["task_id"]
     styles = task["styles"]
     start = time.monotonic()
@@ -42,12 +42,15 @@ def process_task(task: dict, client: FireworksClient, config: Config) -> dict:
         with tempfile.TemporaryDirectory(prefix=f"task_{task_id}_") as tmpdir:
             video_path = os.path.join(tmpdir, "clip.mp4")
 
+            t_download_start = time.monotonic()
             logger.info("[%s] downloading video", task_id)
             download_video(
                 task["video_url"], video_path,
                 timeout=config.download_timeout, retries=config.download_retries,
             )
+            t_download = time.monotonic() - t_download_start
 
+            t_frames_start = time.monotonic()
             logger.info("[%s] extracting frames", task_id)
             timestamped_frames = extract_frames_as_data_uris(
                 video_path,
@@ -59,18 +62,26 @@ def process_task(task: dict, client: FireworksClient, config: Config) -> dict:
                 ffprobe_timeout=config.ffprobe_timeout,
                 scene_change_threshold=config.scene_change_threshold,
             )
-            logger.info("[%s] extracted %d frames", task_id, len(timestamped_frames))
+            t_frames = time.monotonic() - t_frames_start
+            logger.info("[%s] extracted %d frames in %.1fs", task_id, len(timestamped_frames), t_frames)
 
+        t_stage_a_start = time.monotonic()
         logger.info("[%s] stage A: describing scene", task_id)
         description = get_stage_a_description(client, timestamped_frames, config, task_id=task_id)
+        t_stage_a = time.monotonic() - t_stage_a_start
 
+        t_stage_b_start = time.monotonic()
         logger.info("[%s] stage B: generating %d styles", task_id, len(styles))
-        captions_raw = get_stage_b_captions(client, description, styles, config, task_id=task_id)
+        captions_raw = get_stage_b_captions(client, description, styles, config, task_id=task_id, deadline=deadline)
+        t_stage_b = time.monotonic() - t_stage_b_start
 
         captions = validate_and_fix(captions_raw, styles, description, task_id=task_id)
 
         elapsed = time.monotonic() - start
-        logger.info("[%s] done in %.1fs", task_id, elapsed)
+        logger.info(
+            "[%s] done in %.1fs (download=%.1fs frames=%.1fs stageA=%.1fs stageB=%.1fs)",
+            task_id, elapsed, t_download, t_frames, t_stage_a, t_stage_b,
+        )
         return {"task_id": task_id, "captions": captions}
 
     except (DownloadError, FrameExtractionError, FileNotFoundError, RuntimeError) as exc:
@@ -119,7 +130,7 @@ def run() -> int:
                 logger.warning("[%s] time budget exhausted before starting; emitting fallback", task["task_id"])
                 results.append({"task_id": task["task_id"], "captions": _ultimate_fallback_captions(task["styles"])})
                 continue
-            fut = executor.submit(process_task, task, client, config)
+            fut = executor.submit(process_task, task, client, config, deadline)
             futures[fut] = task
 
         remaining = max(0.0, deadline - time.monotonic())

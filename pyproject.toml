@@ -1,0 +1,14 @@
+[project]
+name = "deepsync"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+  "requests>=2.31,<3",
+  "google-genai>=0.3,<1",
+  "opencv-python-headless>=4.9,<5",
+  "fastapi>=0.110,<1",
+  "uvicorn[standard]>=0.27,<1"
+]
+
+[tool.vercel]
+entrypoint = "backend.main:app"

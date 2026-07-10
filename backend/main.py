@@ -64,9 +64,8 @@ logger.info("ffprobe: %s", _ffprobe_status)
 if "MISSING" in _ffmpeg_status or "MISSING" in _ffprobe_status:
     logger.error(
         "ffmpeg/ffprobe not found on this host -- every clip will fail frame "
-        "extraction and fall back to template/ultimate captions. This host "
-        "needs to run Dockerfile.backend (which installs ffmpeg via apt), "
-        "not a plain native buildpack."
+        "extraction and fall back to template/ultimate captions. Install "
+        "ffmpeg/ffprobe on the host before running the live app."
     )
 
 app = FastAPI(title="DeepSync API")

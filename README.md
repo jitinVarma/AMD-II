@@ -215,6 +215,52 @@ for status) keeps every individual HTTP request short regardless.
   Dockerfile.backend` + `fly secrets set FIREWORKS_API_KEY=...`. `render.yaml`
   is provided here as the concrete example.)
 
+### Deploy to Fly.io
+
+Fly.io is the recommended host when the free Render memory limit is too
+tight. The live app is a long-running Docker service, not a serverless
+function: video download, ffmpeg frame extraction, OpenCV scene-change
+detection, and concurrent Fireworks calls can legitimately run for several
+minutes. `fly.toml` is configured for `Dockerfile.backend`, 2 shared CPUs,
+and 4 GB RAM, while keeping the backend pipeline unchanged.
+
+Install and log in:
+
+```bash
+brew install flyctl
+fly auth login
+```
+
+If this is the first Fly deploy for the repo, create the app without
+deploying yet:
+
+```bash
+fly launch --dockerfile Dockerfile.backend --no-deploy
+```
+
+If Fly asks to overwrite `fly.toml`, keep this repo's existing file unless
+you intentionally want to change the app name or region. The default
+`primary_region` is `bom`; change it to `sin`, `iad`, etc. if that is closer
+to your demo audience.
+
+Set secrets and deploy:
+
+```bash
+fly secrets set FIREWORKS_API_KEY="key1,key2,key3"
+fly deploy
+```
+
+Verify:
+
+```bash
+fly status
+fly logs
+curl https://deepsync.fly.dev/api/health
+```
+
+Open the deployed app directly at the Fly URL. The same service serves both
+the front-end and `/api/*`, so Vercel is not needed for the live demo.
+
 ## Dev-only tools (not part of the container)
 
 `dev_tools/` is excluded from the Docker build context (`.dockerignore`) and

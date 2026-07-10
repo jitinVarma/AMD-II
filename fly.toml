@@ -1,0 +1,32 @@
+app = "deepsync"
+primary_region = "bom"
+
+[build]
+  dockerfile = "Dockerfile.backend"
+
+[env]
+  MAX_WORKERS = "4"
+  TOTAL_BUDGET_SECONDS = "600"
+  REQUEST_TIMEOUT = "90"
+  DOWNLOAD_TIMEOUT = "90"
+  NUM_FRAMES = "10"
+  REASONING_EFFORT = "none"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "10s"
+    grace_period = "30s"
+    method = "GET"
+    path = "/api/health"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 2
+  memory_mb = 4096

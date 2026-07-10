@@ -40,6 +40,14 @@ logger.info(
 app = FastAPI(title="DeepSync API")
 
 
+@app.get("/api/health")
+def health():
+    """Used by the hosting platform's health check (e.g. Render). No
+    Fireworks call involved -- config was already validated at startup.
+    """
+    return {"status": "ok"}
+
+
 class ClipIn(BaseModel):
     video_url: str = Field(min_length=1)
     name: str = Field(min_length=1)

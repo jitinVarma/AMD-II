@@ -21,6 +21,11 @@ const POLL_INTERVAL_MS = 900;
 const MAX_POLL_FAILURES = 5;
 const REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+// Empty string = same-origin (relative fetches) -- correct both locally
+// and deployed, since backend/main.py serves the front-end and API from
+// the same process/origin. See frontend/config.js. Never hardcode a host.
+const API_BASE = (window.DEEPSYNC_API_BASE || "").replace(/\/$/, "");
+
 // Stage ordering used to compute the overall (slowest-clip-gates) pipeline
 // indicator from real per-clip status.
 const STAGE_INDEX = { queued: 0, stage_a: 0, stage_b: 1, done: 2 };
@@ -343,7 +348,7 @@ async function startGeneration() {
 
   let jobId;
   try {
-    const resp = await fetch("/api/generate", {
+    const resp = await fetch(`${API_BASE}/api/generate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -373,7 +378,7 @@ function showError(message) {
 }
 
 function pollJob(jobId, failureCount = 0) {
-  fetch(`/api/jobs/${jobId}`)
+  fetch(`${API_BASE}/api/jobs/${jobId}`)
     .then((resp) => {
       if (!resp.ok) throw new Error(`status check returned ${resp.status}`);
       return resp.json();

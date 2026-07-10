@@ -31,10 +31,12 @@ Before building the submission image:
 ```
 agent/                    # the container's actual code (download, frames, vision, styling, validate, io, main)
 backend/                  # FastAPI wrapper that runs the SAME agent code as a live web app (see below)
-frontend/                 # DeepSync front-end -- static HTML/CSS/JS, served by backend/main.py
+frontend/                 # DeepSync front-end -- static HTML/CSS/JS, config.js holds the API base URL
 dev_tools/                # NOT part of the container -- local iteration scripts only
 sample_tasks.json         # 3 sample clips, all 4 styles
-Dockerfile
+Dockerfile                # one-shot batch container (competition submission)
+Dockerfile.backend        # persistent server image for the live web app (Render/Railway/Fly)
+render.yaml               # Render Blueprint -- deploys the whole app (see "Deploy to Render" below)
 requirements.txt          # container-only deps
 requirements-backend.txt  # extra deps for the live web app
 ```
@@ -139,8 +141,11 @@ there's no separate/forked pipeline to keep in sync.
 app's own `/api/*` routes -- it never sees the key and never calls Fireworks
 directly.
 
-Run it (one process serves both the API and the front-end, no CORS setup
-needed):
+### Run locally (unified: one process serves both API and front-end)
+
+No CORS setup needed for this mode -- `frontend/config.js`'s default
+(`DEEPSYNC_API_BASE = ""`) means the front-end calls `/api/*` on its own
+origin.
 
 ```bash
 pip install -r requirements.txt -r requirements-backend.txt
@@ -171,10 +176,44 @@ container apply here too (`VISION_MODEL`, `TEXT_MODEL`,
 `TOTAL_BUDGET_SECONDS`, `MAX_WORKERS`, etc.) -- the backend reads the same
 `agent.config.Config`.
 
-This app has no state beyond an in-memory job dict, so it's portable to any
-host that can run a Python ASGI process (Fly.io, Render, a plain VM behind
-nginx, etc.) -- just set `FIREWORKS_API_KEY` and run the `uvicorn` command
-above.
+This app has no state beyond an in-memory job dict, so the backend is
+portable to any host that can run a Python ASGI process and allows
+long-running requests/background work.
+
+### Deploy to Render
+
+One Render web service serves both the front-end and the API from the same
+FastAPI process -- no second host, no cross-origin setup. This repo
+includes `render.yaml` and `Dockerfile.backend` (a separate,
+persistent-server image from the root `Dockerfile`, which builds the
+one-shot batch container for the competition submission). A plain Vercel
+serverless function wouldn't work here: a captioning job can legitimately
+run for minutes (download + adaptive frame extraction + Stage A + Stage B +
+judge, across up to 12 clips, within an up-to-8-minute budget), well past
+serverless request-duration caps -- `Dockerfile.backend` runs it as a
+normal always-on server instead. The async job-id-plus-polling design
+(`POST /api/generate` returns immediately; `GET /api/jobs/{id}` is polled
+for status) keeps every individual HTTP request short regardless.
+
+- In the Render dashboard: **New -> Blueprint**, connect this repo. Render
+  reads `render.yaml` and provisions a `deepsync` web service built from
+  `Dockerfile.backend`.
+- Set these env vars on the service (Render dashboard -> Environment,
+  they're declared `sync: false` in `render.yaml` so Render won't try to
+  manage them for you):
+  - `FIREWORKS_API_KEY` — comma-separated Fireworks key(s). **Never commit
+    this or put it in `render.yaml`.**
+  - Optionally `VISION_MODEL`, `TEXT_MODEL`, `JUDGE_MODEL`,
+    `TOTAL_BUDGET_SECONDS`, `MAX_WORKERS` to override
+    [the in-code defaults](#configuration-env-vars-all-optional).
+- Render assigns one public URL, e.g. `https://deepsync.onrender.com` --
+  open it directly, front-end and API both live there. `GET /api/health` is
+  the health-check route Render polls to confirm the service is up.
+- (Railway or Fly.io work too -- both are Docker-native, so
+  `Dockerfile.backend` carries over directly: Railway via a `railway.json`/
+  service pointed at that Dockerfile, Fly via `fly launch --dockerfile
+  Dockerfile.backend` + `fly secrets set FIREWORKS_API_KEY=...`. `render.yaml`
+  is provided here as the concrete example.)
 
 ## Dev-only tools (not part of the container)
 

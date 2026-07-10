@@ -28,6 +28,8 @@ from agent.fireworks_client import FireworksClient
 from agent.main import process_task
 from agent.styling import ALL_STYLES
 
+from .diagnostics import TaskLogCapture
+
 logger = logging.getLogger("backend.jobs")
 
 MAX_CLIPS = 12
@@ -42,6 +44,11 @@ class ClipStatus:
     duration: float | None = None
     captions: dict | None = None
     used_fallback: bool = False
+    # Captured pipeline log lines for this clip's task_id (see
+    # backend/diagnostics.py) -- lets the API surface *why* a clip fell
+    # back (real Fireworks error, empty description, etc.) without needing
+    # direct access to the host's server logs.
+    debug_log: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -92,6 +99,13 @@ class JobStore:
         self._jobs: dict[str, Job] = {}
         self._lock = threading.Lock()
 
+        # Tapped onto the root logger so every "[task_id] ..." line already
+        # emitted throughout agent/*.py during this clip's run gets
+        # buffered and can be attached to its ClipStatus below -- see
+        # backend/diagnostics.py.
+        self._log_capture = TaskLogCapture()
+        logging.getLogger().addHandler(self._log_capture)
+
     def create_job(self, clips: list[dict]) -> str:
         if not clips:
             raise ValueError("no clips provided")
@@ -102,7 +116,12 @@ class JobStore:
         clip_statuses: dict[str, ClipStatus] = {}
         tasks = []
         for i, clip in enumerate(clips, start=1):
-            task_id = f"clip_{i}"
+            # Job-prefixed so task_id is globally unique across concurrent
+            # jobs -- every agent/*.py log line is tagged "[task_id] ...",
+            # and the log-capture buffer above is keyed by that same
+            # string, so a bare "clip_1" would collide between two jobs
+            # running at once.
+            task_id = f"{job_id}_clip_{i}"
             clip_statuses[task_id] = ClipStatus(task_id=task_id, video_url=clip["video_url"], name=clip["name"])
             tasks.append({"task_id": task_id, "video_url": clip["video_url"], "styles": ALL_STYLES})
 
@@ -145,6 +164,7 @@ class JobStore:
                 job.clips[task_id].duration = duration
 
         result = process_task(task, self.client, self.config, deadline, on_stage=on_stage)
+        debug_log = self._log_capture.pop(task_id)
 
         with self._lock:
             job = self._jobs.get(job_id)
@@ -153,6 +173,7 @@ class JobStore:
             clip = job.clips[task_id]
             clip.captions = result["captions"]
             clip.stage = "done"
+            clip.debug_log = debug_log
             if all(c.stage == "done" for c in job.clips.values()):
                 job.status = "done"
 

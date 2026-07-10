@@ -70,6 +70,9 @@ def process_task(
                 timeout=config.download_timeout, retries=config.download_retries,
             )
             t_download = time.monotonic() - t_download_start
+            logger.info(
+                "[%s] downloaded %d bytes in %.1fs", task_id, os.path.getsize(video_path), t_download,
+            )
 
             t_frames_start = time.monotonic()
             logger.info("[%s] extracting frames", task_id)

@@ -12,6 +12,7 @@ Run:
 from __future__ import annotations
 
 import logging
+import subprocess
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
@@ -19,12 +20,30 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from agent.config import Config
+from agent.fireworks_client import _mask
 from .jobs import MAX_CLIPS, JobStore
 
 logging.basicConfig(level="INFO", format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 logger = logging.getLogger("backend.main")
 
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
+
+
+def _check_binary(name: str) -> str:
+    """Deploy-host sanity check: agent/frames.py shells out to ffmpeg/
+    ffprobe directly, and a plain (non-Docker) host may not have them
+    installed -- this fails loudly at startup instead of silently
+    degrading every clip to fallback captions later.
+    """
+    try:
+        proc = subprocess.run([name, "-version"], capture_output=True, text=True, timeout=10)
+        first_line = (proc.stdout or proc.stderr or "").splitlines()[0] if (proc.stdout or proc.stderr) else ""
+        return f"OK ({first_line[:60]})"
+    except FileNotFoundError:
+        return "MISSING -- not on PATH"
+    except Exception as exc:
+        return f"ERROR ({exc})"
+
 
 # Fail fast at startup if the key isn't set -- better than accepting
 # requests and failing every job.
@@ -36,16 +55,35 @@ logger.info(
     "DeepSync API starting: vision_model=%s text_model=%s keys=%d workers=%d budget=%.0fs",
     config.vision_model, config.text_model, len(config.api_keys), config.max_workers, config.total_budget_seconds,
 )
+logger.info("FIREWORKS_API_KEY(s): %s", ", ".join(_mask(k) for k in config.api_keys))
+
+_ffmpeg_status = _check_binary("ffmpeg")
+_ffprobe_status = _check_binary("ffprobe")
+logger.info("ffmpeg: %s", _ffmpeg_status)
+logger.info("ffprobe: %s", _ffprobe_status)
+if "MISSING" in _ffmpeg_status or "MISSING" in _ffprobe_status:
+    logger.error(
+        "ffmpeg/ffprobe not found on this host -- every clip will fail frame "
+        "extraction and fall back to template/ultimate captions. This host "
+        "needs to run Dockerfile.backend (which installs ffmpeg via apt), "
+        "not a plain native buildpack."
+    )
 
 app = FastAPI(title="DeepSync API")
 
 
 @app.get("/api/health")
 def health():
-    """Used by the hosting platform's health check (e.g. Render). No
-    Fireworks call involved -- config was already validated at startup.
+    """Used by the hosting platform's health check (e.g. Render), and
+    doubles as a quick deploy-diagnostics endpoint -- no Fireworks call
+    involved, no secrets exposed (keys are masked).
     """
-    return {"status": "ok"}
+    return {
+        "status": "ok",
+        "ffmpeg": _ffmpeg_status,
+        "ffprobe": _ffprobe_status,
+        "fireworks_keys_configured": len(config.api_keys),
+    }
 
 
 class ClipIn(BaseModel):
@@ -86,6 +124,7 @@ def get_job(job_id: str):
                 "duration": c.duration,
                 "captions": c.captions,
                 "used_fallback": c.used_fallback,
+                "debug_log": c.debug_log,
             }
             for c in job.clips.values()
         ],

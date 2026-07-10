@@ -1,0 +1,152 @@
+[
+  {
+    "task_id": "v1",
+    "video_url": "https://storage.googleapis.com/amd-hackathon-clips/1860079-uhd_2560_1440_25fps.mp4",
+    "styles": [
+      "formal",
+      "sarcastic",
+      "humorous_tech",
+      "humorous_non_tech"
+    ]
+  },
+  {
+    "task_id": "v2",
+    "video_url": "https://storage.googleapis.com/amd-hackathon-clips/13825391-uhd_3840_2160_30fps.mp4",
+    "styles": [
+      "formal",
+      "sarcastic",
+      "humorous_tech",
+      "humorous_non_tech"
+    ]
+  },
+  {
+    "task_id": "v3",
+    "video_url": "https://storage.googleapis.com/amd-hackathon-clips/3044693-uhd_3840_2160_24fps.mp4",
+    "styles": [
+      "formal",
+      "sarcastic",
+      "humorous_tech",
+      "humorous_non_tech"
+    ]
+  },
+  {
+    "task_id": "nature_waterfall",
+    "video_url": "https://assets.mixkit.co/videos/2213/2213-1080.mp4",
+    "styles": [
+      "formal",
+      "sarcastic",
+      "humorous_tech",
+      "humorous_non_tech"
+    ]
+  },
+  {
+    "task_id": "urban_city_night",
+    "video_url": "https://assets.mixkit.co/videos/4308/4308-1080.mp4",
+    "styles": [
+      "formal",
+      "sarcastic",
+      "humorous_tech",
+      "humorous_non_tech"
+    ]
+  },
+  {
+    "task_id": "animal_lions",
+    "video_url": "https://assets.mixkit.co/videos/11054/11054-720.mp4",
+    "styles": [
+      "formal",
+      "sarcastic",
+      "humorous_tech",
+      "humorous_non_tech"
+    ]
+  },
+  {
+    "task_id": "people_walking",
+    "video_url": "https://assets.mixkit.co/videos/43148/43148-1080.mp4",
+    "styles": [
+      "formal",
+      "sarcastic",
+      "humorous_tech",
+      "humorous_non_tech"
+    ]
+  },
+  {
+    "task_id": "weather_rain",
+    "video_url": "https://assets.mixkit.co/videos/27704/27704-720.mp4",
+    "styles": [
+      "formal",
+      "sarcastic",
+      "humorous_tech",
+      "humorous_non_tech"
+    ]
+  },
+  {
+    "task_id": "sports_soccer",
+    "video_url": "https://assets.mixkit.co/videos/43494/43494-1080.mp4",
+    "styles": [
+      "formal",
+      "sarcastic",
+      "humorous_tech",
+      "humorous_non_tech"
+    ]
+  },
+  {
+    "task_id": "food_chef",
+    "video_url": "https://assets.mixkit.co/videos/1669/1669-1080.mp4",
+    "styles": [
+      "formal",
+      "sarcastic",
+      "humorous_tech",
+      "humorous_non_tech"
+    ]
+  },
+  {
+    "task_id": "tech_vr",
+    "video_url": "https://assets.mixkit.co/videos/51214/51214-1080.mp4",
+    "styles": [
+      "formal",
+      "sarcastic",
+      "humorous_tech",
+      "humorous_non_tech"
+    ]
+  },
+  {
+    "task_id": "nature_ocean_waves",
+    "video_url": "https://assets.mixkit.co/videos/48525/48525-720.mp4",
+    "styles": [
+      "formal",
+      "sarcastic",
+      "humorous_tech",
+      "humorous_non_tech"
+    ]
+  },
+  {
+    "task_id": "animal_birds",
+    "video_url": "https://assets.mixkit.co/videos/11007/11007-720.mp4",
+    "styles": [
+      "formal",
+      "sarcastic",
+      "humorous_tech",
+      "humorous_non_tech"
+    ]
+  },
+  {
+    "task_id": "tech_animation",
+    "video_url": "https://assets.mixkit.co/videos/99786/99786-1080.mp4",
+    "styles": [
+      "formal",
+      "sarcastic",
+      "humorous_tech",
+      "humorous_non_tech"
+    ]
+  },
+  {
+    "task_id": "sports_running",
+    "video_url": "https://assets.mixkit.co/videos/23582/23582-720.mp4",
+    "styles": [
+      "formal",
+      "sarcastic",
+      "humorous_tech",
+      "humorous_non_tech"
+    ]
+  }
+]

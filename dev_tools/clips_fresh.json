@@ -1,0 +1,82 @@
+[
+  {
+    "task_id": "nature_desert",
+    "video_url": "https://assets.mixkit.co/videos/4285/4285-720.mp4",
+    "styles": [
+      "formal",
+      "sarcastic",
+      "humorous_tech",
+      "humorous_non_tech"
+    ]
+  },
+  {
+    "task_id": "urban_subway_train",
+    "video_url": "https://assets.mixkit.co/videos/1606/1606-720.mp4",
+    "styles": [
+      "formal",
+      "sarcastic",
+      "humorous_tech",
+      "humorous_non_tech"
+    ]
+  },
+  {
+    "task_id": "animal_elephants",
+    "video_url": "https://assets.mixkit.co/videos/11059/11059-720.mp4",
+    "styles": [
+      "formal",
+      "sarcastic",
+      "humorous_tech",
+      "humorous_non_tech"
+    ]
+  },
+  {
+    "task_id": "people_market",
+    "video_url": "https://assets.mixkit.co/videos/993/993-720.mp4",
+    "styles": [
+      "formal",
+      "sarcastic",
+      "humorous_tech",
+      "humorous_non_tech"
+    ]
+  },
+  {
+    "task_id": "sports_basketball",
+    "video_url": "https://assets.mixkit.co/videos/2273/2273-720.mp4",
+    "styles": [
+      "formal",
+      "sarcastic",
+      "humorous_tech",
+      "humorous_non_tech"
+    ]
+  },
+  {
+    "task_id": "food_coffee",
+    "video_url": "https://assets.mixkit.co/videos/4985/4985-720.mp4",
+    "styles": [
+      "formal",
+      "sarcastic",
+      "humorous_tech",
+      "humorous_non_tech"
+    ]
+  },
+  {
+    "task_id": "weather_snow",
+    "video_url": "https://assets.mixkit.co/videos/3317/3317-720.mp4",
+    "styles": [
+      "formal",
+      "sarcastic",
+      "humorous_tech",
+      "humorous_non_tech"
+    ]
+  },
+  {
+    "task_id": "tech_developer",
+    "video_url": "https://assets.mixkit.co/videos/1749/1749-720.mp4",
+    "styles": [
+      "formal",
+      "sarcastic",
+      "humorous_tech",
+      "humorous_non_tech"
+    ]
+  }
+]

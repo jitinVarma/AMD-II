@@ -8,11 +8,29 @@ The judge's vision model (JUDGE_VISION_MODEL) is pinned independently of
 whatever VISION_MODEL the pipeline itself is configured with, so before/after
 comparisons stay apples-to-apples even across a pipeline model change.
 
+STANDING ANTI-OVERFITTING RULE: validate every change against TWO clip sets,
+never one.
+  - TUNED  = clips we've iterated against / inspected the output of. Scores
+    improving here are NOT evidence of a real gain -- the model may just be
+    fitting our specific tuning clips.
+  - FRESH  = clips we have never looked at the generated output for. A
+    change is only accepted if it holds steady or improves on FRESH. The
+    moment you read a fresh clip's captions to judge quality, it is no
+    longer fresh -- move it into the tuned set file.
+Rotate new, never-inspected clips into the fresh set periodically so it
+doesn't quietly become a second tuned set.
+
 Usage:
+  # single-set mode (quick check, backward compatible)
   FIREWORKS_API_KEY="key1,key2,key3" python3 -m dev_tools.judge_harness [tasks.json]
+
+  # dual-set mode (use this to validate any real change)
+  FIREWORKS_API_KEY="key1,key2,key3" python3 -m dev_tools.judge_harness \
+      --tuned dev_tools/clips_tuned.json --fresh dev_tools/clips_fresh.json
 """
 from __future__ import annotations
 
+import argparse
 import json
 import logging
 import os
@@ -91,24 +109,18 @@ def _judge_caption(client: FireworksClient, config: Config, timestamped_frames: 
     }
 
 
-def main() -> None:
-    tasks_path = sys.argv[1] if len(sys.argv) > 1 else "sample_tasks.json"
-    with open(tasks_path, "r", encoding="utf-8") as f:
-        tasks = json.load(f)
-
-    config = Config()
-    config.validate()
-    client = FireworksClient(config)
-
-    print(f"Pipeline vision_model={config.vision_model}  text_model={config.text_model}")
-    print(f"Judge (pinned) vision_model={JUDGE_VISION_MODEL}")
-
+def _run_set(tasks: list[dict], client: FireworksClient, config: Config, label: str, verbose: bool) -> dict[str, list[tuple[float, float]]]:
+    """Runs the full pipeline + judge over one clip set, returns
+    {style: [(accuracy, style_match), ...]}.
+    """
     all_scores: dict[str, list[tuple[float, float]]] = {}
+    call_delay = float(os.environ.get("JUDGE_CALL_DELAY_SECONDS", "2.0"))
 
     for task in tasks:
         task_id = task["task_id"]
         styles = task["styles"]
-        print(f"\n{'=' * 80}\nTASK {task_id}  {task['video_url']}\n{'=' * 80}")
+        if verbose:
+            print(f"\n{'=' * 80}\n[{label}] TASK {task_id}  {task['video_url']}\n{'=' * 80}")
 
         with tempfile.TemporaryDirectory(prefix=f"judge_{task_id}_") as tmpdir:
             video_path = os.path.join(tmpdir, "clip.mp4")
@@ -125,26 +137,27 @@ def main() -> None:
             )
 
         description = get_stage_a_description(client, timestamped_frames, config, task_id=task_id)
-        print("Stage A description:")
-        print(json.dumps(description, indent=2, ensure_ascii=False))
+        if verbose:
+            print("Stage A description:")
+            print(json.dumps(description, indent=2, ensure_ascii=False))
 
         captions = get_stage_b_captions(client, description, styles, config, task_id=task_id)
 
-        # A small pacing delay between judge calls keeps a single low-tier API
-        # key (10 RPM without a payment method on file) from tripping 429s
-        # mid-run when iterating locally with few keys. Not needed in the
-        # production container, which paces itself naturally.
-        call_delay = float(os.environ.get("JUDGE_CALL_DELAY_SECONDS", "2.0"))
         for style, caption in captions.items():
             time.sleep(call_delay)
             score = _judge_caption(client, config, timestamped_frames, style, caption, task_id)
             all_scores.setdefault(style, [])
-            print(f"\n  [{style}] {caption}")
-            print(f"    accuracy={score['accuracy']}  style_match={score['style_match']}  reasoning={score['reasoning']}")
+            if verbose:
+                print(f"\n  [{style}] {caption}")
+                print(f"    accuracy={score['accuracy']}  style_match={score['style_match']}  reasoning={score['reasoning']}")
             if isinstance(score["accuracy"], (int, float)) and isinstance(score["style_match"], (int, float)):
                 all_scores[style].append((score["accuracy"], score["style_match"]))
 
-    print(f"\n{'=' * 80}\nSUMMARY\n{'=' * 80}")
+    return all_scores
+
+
+def _summarize(all_scores: dict[str, list[tuple[float, float]]], label: str) -> tuple[float | None, float | None]:
+    print(f"\n{'=' * 80}\n{label} SUMMARY\n{'=' * 80}")
     overall_acc: list[float] = []
     overall_style: list[float] = []
     for style, pairs in all_scores.items():
@@ -157,8 +170,71 @@ def main() -> None:
         overall_style.extend(sty)
         print(f"  {style:20s} accuracy={statistics.mean(acc):.2f}  style_match={statistics.mean(sty):.2f}  n={len(pairs)}")
 
-    if overall_acc:
-        print(f"\n  {'OVERALL':20s} accuracy={statistics.mean(overall_acc):.2f}  style_match={statistics.mean(overall_style):.2f}")
+    if not overall_acc:
+        print(f"\n  {'OVERALL':20s} no valid scores")
+        return None, None
+
+    mean_acc, mean_style = statistics.mean(overall_acc), statistics.mean(overall_style)
+    print(f"\n  {'OVERALL':20s} accuracy={mean_acc:.2f}  style_match={mean_style:.2f}")
+    return mean_acc, mean_style
+
+
+def _load_tasks(path: str) -> list[dict]:
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("tasks_path", nargs="?", default=None, help="single-set mode: path to a tasks.json")
+    parser.add_argument("--tuned", default=None, help="dual-set mode: path to the TUNED clip set")
+    parser.add_argument("--fresh", default=None, help="dual-set mode: path to the FRESH (never-inspected) clip set")
+    parser.add_argument("--quiet", action="store_true", help="suppress per-clip/per-caption output, print summaries only")
+    args = parser.parse_args()
+
+    config = Config()
+    config.validate()
+    client = FireworksClient(config)
+
+    print(f"Pipeline vision_model={config.vision_model}  text_model={config.text_model}")
+    print(f"Judge (pinned) vision_model={JUDGE_VISION_MODEL}")
+
+    if args.tuned or args.fresh:
+        if not (args.tuned and args.fresh):
+            parser.error("--tuned and --fresh must be given together")
+
+        tuned_tasks = _load_tasks(args.tuned)
+        fresh_tasks = _load_tasks(args.fresh)
+        print(f"\nTUNED set: {args.tuned} ({len(tuned_tasks)} clips, previously inspected -- gains here are NOT evidence)")
+        print(f"FRESH set: {args.fresh} ({len(fresh_tasks)} clips, never inspected -- this is the real signal)")
+
+        tuned_scores = _run_set(tuned_tasks, client, config, "TUNED", verbose=not args.quiet)
+        tuned_acc, tuned_style = _summarize(tuned_scores, "TUNED")
+
+        fresh_scores = _run_set(fresh_tasks, client, config, "FRESH", verbose=not args.quiet)
+        fresh_acc, fresh_style = _summarize(fresh_scores, "FRESH")
+
+        print(f"\n{'=' * 80}\nTUNED vs FRESH\n{'=' * 80}")
+        if tuned_acc is not None and fresh_acc is not None:
+            print(f"  {'':20s} {'accuracy':>10s} {'style_match':>13s}")
+            print(f"  {'TUNED':20s} {tuned_acc:10.2f} {tuned_style:13.2f}")
+            print(f"  {'FRESH':20s} {fresh_acc:10.2f} {fresh_style:13.2f}")
+            print(f"  {'delta (fresh-tuned)':20s} {fresh_acc - tuned_acc:+10.2f} {fresh_style - tuned_style:+13.2f}")
+            if fresh_acc < tuned_acc - 0.05 or fresh_style < tuned_style - 0.05:
+                print(
+                    "\n  ⚠️  FRESH lags TUNED by >0.05 on at least one metric -- classic overfit "
+                    "signature. Do not accept this change on tuned-set improvement alone."
+                )
+            else:
+                print("\n  FRESH holds steady with TUNED -- no overfit signal detected.")
+        else:
+            print("  Could not compute a delta (one or both sets had no valid scores).")
+        return
+
+    tasks_path = args.tasks_path or "sample_tasks.json"
+    tasks = _load_tasks(tasks_path)
+    scores = _run_set(tasks, client, config, "SET", verbose=not args.quiet)
+    _summarize(scores, "SUMMARY")
 
 
 if __name__ == "__main__":

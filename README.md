@@ -29,11 +29,14 @@ Before building the submission image:
 ## Layout
 
 ```
-agent/            # the container's actual code (download, frames, vision, styling, validate, io, main)
-dev_tools/         # NOT part of the container -- local iteration scripts only
-sample_tasks.json  # 3 sample clips, all 4 styles
+agent/                    # the container's actual code (download, frames, vision, styling, validate, io, main)
+backend/                  # FastAPI wrapper that runs the SAME agent code as a live web app (see below)
+frontend/                 # DeepSync front-end -- static HTML/CSS/JS, served by backend/main.py
+dev_tools/                # NOT part of the container -- local iteration scripts only
+sample_tasks.json         # 3 sample clips, all 4 styles
 Dockerfile
-requirements.txt
+requirements.txt          # container-only deps
+requirements-backend.txt  # extra deps for the live web app
 ```
 
 ## Build
@@ -121,6 +124,57 @@ hallucinated a different building, and was consistently faster too. \
 `glm-5p2` remains a strong, working dedicated text model. Re-verify against \
 your own account before relying on any of this -- serverless catalogs \
 change, and neither catalog-listing endpoint can be fully trusted.
+
+## Live web app (DeepSync)
+
+A small FastAPI server (`backend/`) wraps this same agent code and serves it
+as a live app with a front-end (`frontend/`), for a real, clickable demo
+rather than a batch container. It calls `agent.main.process_task()` directly
+-- the identical function the submission container runs per clip -- so
+there's no separate/forked pipeline to keep in sync.
+
+**Security:** the Fireworks API key is read server-side only, from the
+`FIREWORKS_API_KEY` env var, and is used exclusively inside
+`backend/jobs.py`'s server-side client. The browser only ever talks to this
+app's own `/api/*` routes -- it never sees the key and never calls Fireworks
+directly.
+
+Run it (one process serves both the API and the front-end, no CORS setup
+needed):
+
+```bash
+pip install -r requirements.txt -r requirements-backend.txt
+
+FIREWORKS_API_KEY="key1,key2,key3" uvicorn backend.main:app --host 0.0.0.0 --port 8000
+```
+
+Then open `http://localhost:8000`. Paste a public video URL, queue up to 12
+clips, click "Generate captions" -- the front-end polls real per-clip status
+(`Stage A · Analyzing` → `Stage B · Restyling` → `Ready`) and renders the
+actual returned captions. A clip that fails mid-pipeline still returns its
+guaranteed fallback captions (same contract as the container) and is flagged
+in the UI with a "Fallback used" badge rather than silently hidden.
+
+Scope note: this pass is URL-sourced clips only -- the file-upload dropzone
+in the UI is present but inert (labeled "coming soon"), since wiring real
+uploads to the API wasn't part of this iteration.
+
+`backend/main.py` mounts `frontend/` as static files and exposes:
+
+| Route | Purpose |
+|---|---|
+| `POST /api/generate` | `{"clips": [{"video_url", "name"}, ...]}` → `{"job_id"}`, processing starts in the background immediately |
+| `GET /api/jobs/{job_id}` | current status: per-clip `stage`, `duration`, `captions`, `used_fallback` |
+
+Same [configuration env vars](#configuration-env-vars-all-optional) as the
+container apply here too (`VISION_MODEL`, `TEXT_MODEL`,
+`TOTAL_BUDGET_SECONDS`, `MAX_WORKERS`, etc.) -- the backend reads the same
+`agent.config.Config`.
+
+This app has no state beyond an in-memory job dict, so it's portable to any
+host that can run a Python ASGI process (Fly.io, Render, a plain VM behind
+nginx, etc.) -- just set `FIREWORKS_API_KEY` and run the `uvicorn` command
+above.
 
 ## Dev-only tools (not part of the container)
 

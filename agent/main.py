@@ -11,6 +11,7 @@ import os
 import sys
 import tempfile
 import time
+from typing import Callable
 
 from .config import Config
 from .download import DownloadError, download_video
@@ -33,10 +34,30 @@ def _ultimate_fallback_captions(styles: list[str]) -> dict:
     return {s: ULTIMATE_FALLBACKS.get(s, "Unable to generate a caption for this clip.") for s in styles}
 
 
-def process_task(task: dict, client: FireworksClient, config: Config, deadline: float) -> dict:
+def process_task(
+    task: dict, client: FireworksClient, config: Config, deadline: float,
+    on_stage: Callable[[str], None] | None = None,
+) -> dict:
+    """`on_stage`, if given, is called with one of "stage_a" / "stage_b" /
+    "done" / "failed" as the task moves through the pipeline -- purely
+    additive and optional, for a caller (e.g. a server wanting live
+    per-clip status) to observe progress. Never affects pipeline behavior:
+    any exception the callback raises is caught and ignored. The container
+    entrypoint (run(), below) doesn't pass one, so this is a no-op there.
+    """
     task_id = task["task_id"]
     styles = task["styles"]
     start = time.monotonic()
+
+    def _report(stage: str) -> None:
+        if on_stage is None:
+            return
+        try:
+            on_stage(stage)
+        except Exception:
+            logger.exception("[%s] on_stage callback raised, ignoring", task_id)
+
+    _report("stage_a")
 
     try:
         with tempfile.TemporaryDirectory(prefix=f"task_{task_id}_") as tmpdir:
@@ -70,6 +91,7 @@ def process_task(task: dict, client: FireworksClient, config: Config, deadline: 
         description = get_stage_a_description(client, timestamped_frames, config, task_id=task_id)
         t_stage_a = time.monotonic() - t_stage_a_start
 
+        _report("stage_b")
         t_stage_b_start = time.monotonic()
         logger.info("[%s] stage B: generating %d styles", task_id, len(styles))
         captions_raw = get_stage_b_captions(client, description, styles, config, task_id=task_id, deadline=deadline)
@@ -82,13 +104,16 @@ def process_task(task: dict, client: FireworksClient, config: Config, deadline: 
             "[%s] done in %.1fs (download=%.1fs frames=%.1fs stageA=%.1fs stageB=%.1fs)",
             task_id, elapsed, t_download, t_frames, t_stage_a, t_stage_b,
         )
+        _report("done")
         return {"task_id": task_id, "captions": captions}
 
     except (DownloadError, FrameExtractionError, FileNotFoundError, RuntimeError) as exc:
         logger.error("[%s] pipeline failed (%s): %s", task_id, type(exc).__name__, exc)
+        _report("failed")
         return {"task_id": task_id, "captions": _ultimate_fallback_captions(styles)}
     except Exception:
         logger.exception("[%s] unexpected error, emitting fallback captions", task_id)
+        _report("failed")
         return {"task_id": task_id, "captions": _ultimate_fallback_captions(styles)}
 
 

@@ -1,0 +1,5 @@
+# Extra deps for the live web app (backend/) on top of requirements.txt.
+# Kept separate from requirements.txt so the submission container image
+# doesn't pull in a web server it never uses.
+fastapi>=0.110,<1
+uvicorn[standard]>=0.27,<1

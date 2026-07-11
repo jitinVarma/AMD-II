@@ -13,9 +13,11 @@ from __future__ import annotations
 
 import logging
 import subprocess
+import tempfile
+import uuid
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -70,6 +72,18 @@ if "MISSING" in _ffmpeg_status or "MISSING" in _ffprobe_status:
 
 app = FastAPI(title="DeepSync API")
 
+# Ephemeral store for browser-uploaded clips. Not persisted across restarts
+# and never cleaned up mid-process -- acceptable for a demo app whose job
+# store (backend/jobs.py) is already in-memory-only with the same lifetime.
+UPLOAD_DIR = Path(tempfile.mkdtemp(prefix="deepsync_uploads_"))
+MAX_UPLOAD_BYTES = 200 * 1024 * 1024  # 200MB -- generous for a short clip, bounds disk usage
+_UPLOAD_EXTENSION_BY_CONTENT_TYPE = {
+    "video/mp4": ".mp4",
+    "video/quicktime": ".mov",
+    "video/webm": ".webm",
+    "video/x-matroska": ".mkv",
+}
+
 
 @app.get("/api/health")
 def health():
@@ -107,6 +121,42 @@ def generate(req: GenerateRequest):
     return {"job_id": job_id}
 
 
+@app.post("/api/upload")
+async def upload(request: Request, file: UploadFile = File(...)):
+    """Accepts a browser-uploaded video file and returns a same-process URL
+    for it. The rest of the pipeline (agent/download.py's download_video)
+    fetches that URL back over plain HTTP exactly like any pasted clip URL
+    -- so process_task and everything downstream stays completely unchanged;
+    this endpoint only turns "a file the browser has" into "a URL the
+    existing pipeline can already fetch."
+    """
+    ext = _UPLOAD_EXTENSION_BY_CONTENT_TYPE.get(file.content_type)
+    if ext is None:
+        raise HTTPException(
+            400,
+            f"unsupported file type: {file.content_type!r} (expected MP4, MOV, WEBM, or MKV)",
+        )
+
+    dest_path = UPLOAD_DIR / f"{uuid.uuid4().hex}{ext}"
+    size = 0
+    try:
+        with open(dest_path, "wb") as out:
+            while chunk := await file.read(1 << 20):
+                size += len(chunk)
+                if size > MAX_UPLOAD_BYTES:
+                    raise HTTPException(413, f"file too large (max {MAX_UPLOAD_BYTES // (1 << 20)}MB)")
+                out.write(chunk)
+    except HTTPException:
+        dest_path.unlink(missing_ok=True)
+        raise
+    except Exception as exc:
+        dest_path.unlink(missing_ok=True)
+        raise HTTPException(500, f"could not save upload: {exc}") from exc
+
+    video_url = f"{str(request.base_url).rstrip('/')}/uploads/{dest_path.name}"
+    return {"video_url": video_url, "name": file.filename or dest_path.name}
+
+
 @app.get("/api/jobs/{job_id}")
 def get_job(job_id: str):
     job = job_store.get_job(job_id)
@@ -119,6 +169,7 @@ def get_job(job_id: str):
             {
                 "task_id": c.task_id,
                 "name": c.name,
+                "video_url": c.video_url,
                 "stage": c.stage,
                 "duration": c.duration,
                 "captions": c.captions,
@@ -129,6 +180,11 @@ def get_job(job_id: str):
         ],
     }
 
+
+# Serves uploaded files back to our own download_video() call -- must be
+# mounted before the catch-all "/" frontend mount below, same reasoning as
+# the /api/* routes above it.
+app.mount("/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
 
 # Mounted last so /api/* routes above take precedence over the catch-all
 # static file serving.

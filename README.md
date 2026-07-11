@@ -151,22 +151,22 @@ pip install -r requirements.txt -r requirements-backend.txt
 FIREWORKS_API_KEY="key1,key2,key3" uvicorn backend.main:app --host 0.0.0.0 --port 8000
 ```
 
-Then open `http://localhost:8000`. Paste a public video URL, queue up to 12
-clips, click "Generate captions" -- the front-end polls real per-clip status
-(`Stage A · Analyzing` → `Stage B · Restyling` → `Ready`) and renders the
-actual returned captions. A clip that fails mid-pipeline still returns its
-guaranteed fallback captions (same contract as the container) and is flagged
-in the UI with a "Fallback used" badge rather than silently hidden.
-
-Scope note: this pass is URL-sourced clips only -- the file-upload dropzone
-in the UI is present but inert (labeled "coming soon"), since wiring real
-uploads to the API wasn't part of this iteration.
+Then open `http://localhost:8000`. Paste a public video URL, or drop/browse a
+local file (MP4/MOV/WEBM/MKV) -- an uploaded file is POSTed to `/api/upload`,
+which stores it and hands back a URL that the pipeline fetches back over
+plain HTTP, so both paths feed the identical downstream contract. Queue up
+to 12 clips, click "Generate captions" -- the front-end polls real per-clip
+status (`Stage A · Analyzing` → `Stage B · Restyling` → `Ready`) and renders
+the actual returned captions. A clip that fails mid-pipeline still returns
+its guaranteed fallback captions (same contract as the container) and is
+flagged in the UI with a "Fallback used" badge rather than silently hidden.
 
 `backend/main.py` mounts `frontend/` as static files and exposes:
 
 | Route | Purpose |
 |---|---|
 | `POST /api/generate` | `{"clips": [{"video_url", "name"}, ...]}` → `{"job_id"}`, processing starts in the background immediately |
+| `POST /api/upload` | multipart file upload (`file`) → `{"video_url", "name"}` for use in a subsequent `/api/generate` call |
 | `GET /api/jobs/{job_id}` | current status: per-clip `stage`, `duration`, `captions`, `used_fallback` |
 
 Same [configuration env vars](#configuration-env-vars-all-optional) as the

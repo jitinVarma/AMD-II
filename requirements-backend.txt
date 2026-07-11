@@ -3,3 +3,4 @@
 # doesn't pull in a web server it never uses.
 fastapi>=0.110,<1
 uvicorn[standard]>=0.27,<1
+python-multipart>=0.0.9,<1

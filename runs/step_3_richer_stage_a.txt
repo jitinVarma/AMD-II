@@ -1,0 +1,1753 @@
+/Users/jitinvarma/Documents/jitin/apps/hackathons/AMDp1/.venv/lib/python3.14/site-packages/pydantic/_internal/_generate_schema.py:661: ArbitraryTypeWarning: <built-in function any> is not a Python type (it may be an instance of an object), Pydantic will allow any object with no validation since we cannot even enforce that the input is an instance of the given type. To get rid of this error wrap the type with `pydantic.SkipValidation`.
+  warnings.warn(
+2026-07-11 15:21:41,713 INFO agent.frames: only 3 frames after normal placement (duration=6.0s, target=6) -- filling to the hard floor via largest-gap insertion
+2026-07-11 15:21:46,787 INFO agent.styling: [v1] stage B degradation tier=full_quality (0% of budget elapsed)
+2026-07-11 15:22:22,934 INFO agent.frames: only 5 frames after normal placement (duration=12.4s, target=6) -- filling to the hard floor via largest-gap insertion
+2026-07-11 15:22:26,606 INFO agent.styling: [v2] stage B degradation tier=full_quality (0% of budget elapsed)
+2026-07-11 15:22:52,984 INFO agent.styling: [v3] stage B degradation tier=full_quality (0% of budget elapsed)
+2026-07-11 15:23:13,569 INFO agent.frames: only 5 frames after normal placement (duration=15.0s, target=6) -- filling to the hard floor via largest-gap insertion
+2026-07-11 15:23:18,652 INFO agent.styling: [nature_waterfall] stage B degradation tier=full_quality (0% of budget elapsed)
+2026-07-11 15:23:43,578 INFO agent.frames: only 5 frames after normal placement (duration=12.3s, target=6) -- filling to the hard floor via largest-gap insertion
+2026-07-11 15:23:48,815 INFO agent.styling: [urban_city_night] stage B degradation tier=full_quality (0% of budget elapsed)
+2026-07-11 15:24:11,011 INFO agent.frames: only 5 frames after normal placement (duration=11.0s, target=6) -- filling to the hard floor via largest-gap insertion
+2026-07-11 15:24:14,887 INFO agent.styling: [animal_lions] stage B degradation tier=full_quality (0% of budget elapsed)
+2026-07-11 15:24:35,185 INFO agent.frames: only 3 frames after normal placement (duration=7.3s, target=6) -- filling to the hard floor via largest-gap insertion
+2026-07-11 15:24:40,619 INFO agent.styling: [people_walking] stage B degradation tier=full_quality (0% of budget elapsed)
+2026-07-11 15:25:04,705 INFO agent.styling: [weather_rain] stage B degradation tier=full_quality (0% of budget elapsed)
+2026-07-11 15:25:28,704 INFO agent.frames: only 3 frames after normal placement (duration=5.7s, target=6) -- filling to the hard floor via largest-gap insertion
+2026-07-11 15:25:35,164 INFO agent.styling: [sports_soccer] stage B degradation tier=full_quality (0% of budget elapsed)
+2026-07-11 15:26:02,044 INFO agent.frames: only 5 frames after normal placement (duration=12.0s, target=6) -- filling to the hard floor via largest-gap insertion
+2026-07-11 15:26:06,063 INFO agent.styling: [food_chef] stage B degradation tier=full_quality (0% of budget elapsed)
+2026-07-11 15:26:41,053 INFO agent.styling: [tech_vr] stage B degradation tier=full_quality (0% of budget elapsed)
+2026-07-11 15:27:04,480 INFO agent.styling: [nature_ocean_waves] stage B degradation tier=full_quality (0% of budget elapsed)
+2026-07-11 15:27:30,073 INFO agent.styling: [animal_birds] stage B degradation tier=full_quality (0% of budget elapsed)
+2026-07-11 15:27:33,324 WARNING agent.styling: [animal_birds] all sarcastic candidates vetoed/unusable, regenerating once
+2026-07-11 15:27:50,440 INFO agent.frames: only 3 frames after normal placement (duration=5.0s, target=6) -- filling to the hard floor via largest-gap insertion
+2026-07-11 15:27:55,476 INFO agent.styling: [tech_animation] stage B degradation tier=full_quality (0% of budget elapsed)
+2026-07-11 15:28:15,112 INFO agent.frames: only 3 frames after normal placement (duration=6.9s, target=6) -- filling to the hard floor via largest-gap insertion
+2026-07-11 15:28:18,754 INFO agent.styling: [sports_running] stage B degradation tier=full_quality (0% of budget elapsed)
+2026-07-11 15:28:42,533 INFO agent.styling: [nature_desert] stage B degradation tier=full_quality (0% of budget elapsed)
+2026-07-11 15:29:08,087 INFO agent.styling: [urban_subway_train] stage B degradation tier=full_quality (0% of budget elapsed)
+2026-07-11 15:29:26,810 INFO agent.frames: only 5 frames after normal placement (duration=14.0s, target=6) -- filling to the hard floor via largest-gap insertion
+2026-07-11 15:29:29,883 INFO agent.styling: [animal_elephants] stage B degradation tier=full_quality (0% of budget elapsed)
+2026-07-11 15:29:57,628 INFO agent.styling: [people_market] stage B degradation tier=full_quality (0% of budget elapsed)
+2026-07-11 15:30:20,564 INFO agent.styling: [sports_basketball] stage B degradation tier=full_quality (0% of budget elapsed)
+2026-07-11 15:30:45,232 WARNING agent.vision: [food_coffee] stage A returned unparseable JSON (retry=0), raw head: '{\n  "subjects": [\n    "roasted coffee beans",\n    "coffee grinder hopper",\n    "white ceramic bowl"\n  ],\n  "setting": "indoor close-up on a light wooden surface",\n  "actions": [\n    "coffee beans rest'
+2026-07-11 15:30:47,993 INFO agent.styling: [food_coffee] stage B degradation tier=full_quality (0% of budget elapsed)
+2026-07-11 15:31:06,983 INFO agent.frames: only 5 frames after normal placement (duration=14.0s, target=6) -- filling to the hard floor via largest-gap insertion
+2026-07-11 15:31:10,037 INFO agent.styling: [weather_snow] stage B degradation tier=full_quality (0% of budget elapsed)
+2026-07-11 15:31:33,732 INFO agent.frames: only 2 frames after normal placement (duration=2.8s, target=6) -- filling to the hard floor via largest-gap insertion
+2026-07-11 15:31:36,338 INFO agent.styling: [tech_developer] stage B degradation tier=full_quality (0% of budget elapsed)
+Pipeline vision_model=accounts/fireworks/models/qwen3p7-plus  text_model=accounts/fireworks/models/glm-5p2
+Judge (pinned) vision_model=accounts/fireworks/models/qwen3p7-plus
+
+TUNED set: dev_tools/clips_tuned.json (15 clips, previously inspected -- gains here are NOT evidence)
+FRESH set: dev_tools/clips_fresh.json (8 clips, never inspected -- this is the real signal)
+
+================================================================================
+[TUNED] TASK v1  https://storage.googleapis.com/amd-hackathon-clips/1860079-uhd_2560_1440_25fps.mp4
+================================================================================
+Stage A description:
+{
+  "subjects": [
+    "urban traffic",
+    "city street",
+    "autumn trees",
+    "high-rise buildings"
+  ],
+  "setting": "a multi-lane city intersection lined with yellow ginkgo trees and tall apartment blocks",
+  "actions": [
+    "vehicles driving through an intersection",
+    "cars appearing as motion blurs",
+    "traffic flowing in multiple directions"
+  ],
+  "mood": "busy, vibrant",
+  "colors": [
+    "yellow",
+    "green",
+    "grey",
+    "white",
+    "red",
+    "black"
+  ],
+  "notable_objects": [
+    "cars",
+    "buses",
+    "traffic lights",
+    "street lamps",
+    "vertical banners",
+    "road markings",
+    "apartment buildings"
+  ],
+  "on_screen_text": "KOREA FIELD ENGINEERING",
+  "temporal_flow": "The scene remains a static high-angle shot where vehicles continuously flow through the intersection, with moving cars rendered as blurred streaks due to time-lapse photography while the background buildings and trees remain stationary.",
+  "scene_category": "urban",
+  "main_subject_attributes": [
+    "multi-lane asphalt road",
+    "yellow autumn foliage",
+    "tall beige residential towers",
+    "mixed vehicle types including sedans and buses"
+  ],
+  "foreground_background": "Foreground features the road intersection and moving traffic; midground contains the tree-lined avenue and lower commercial buildings; background consists of high-rise apartments and distant hills.",
+  "spatial_layout": "The road runs diagonally from bottom-left to center-right; tall buildings dominate the upper-left background; trees line the right side and center median.",
+  "approximate_counts": [
+    "dozens of vehicles",
+    "several high-rise buildings",
+    "multiple traffic lights"
+  ],
+  "visible_motion": [
+    "rapid vehicle movement indicated by motion blur",
+    "static camera position"
+  ],
+  "uncertain_or_ambiguous": [
+    "specific text on vertical banners is illegible",
+    "exact vehicle models are indistinct due to blur"
+  ],
+  "do_not_claim": [
+    "specific city name (though text suggests Korea)",
+    "time of day beyond daylight",
+    "weather conditions beyond clear visibility"
+  ]
+}
+
+  [formal] A time-lapse view of a multi-lane intersection captures vehicles as blurred streaks beneath yellow ginkgo trees and tall residential towers.
+    accuracy=1.0  style_match=1.0  reasoning=The caption is factually precise regarding the visual elements (time-lapse, blurred vehicles, yellow trees, towers) and adheres perfectly to the formal, objective, single-sentence style definition.
+
+  [humorous_tech] The cars are rendered as blurred streaks while the traffic lights and buildings stay perfectly sharp, a long exposure committing all the motion to disk but leaving the infrastructure untouched.
+    accuracy=1.0  style_match=0.2  reasoning=The caption accurately describes the visual contrast between moving cars and static buildings, but it fails the style requirement by being a dry technical observation rather than a humorous analogy.
+
+  [humorous_non_tech] The ginkgo trees lining this intersection picked the perfect golden autumn outfit just to watch a bunch of cars blur past without slowing down to notice.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visual elements (golden trees, blurred traffic) and perfectly captures the requested warm, witty, non-technical tone by personifying the trees' futile attempt to be noticed.
+
+  [sarcastic] Truly a marvel of urban planning -- a dozen lanes of traffic rendered as tasteful abstract streaks, because the cars themselves clearly weren't the point.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visible motion-blurred traffic and perfectly executes the target style by mock-praising the congestion as an artistic choice with dry, deadpan irony.
+
+================================================================================
+[TUNED] TASK v2  https://storage.googleapis.com/amd-hackathon-clips/13825391-uhd_3840_2160_30fps.mp4
+================================================================================
+Stage A description:
+{
+  "subjects": [
+    "a small orange tabby kitten"
+  ],
+  "setting": "outdoors under dense green foliage and tree branches with dappled sunlight on dirt ground",
+  "actions": [
+    "walking forward towards the camera",
+    "lifting front paws while stepping",
+    "raising tail upright"
+  ],
+  "mood": "curious, gentle",
+  "colors": [
+    "orange",
+    "green",
+    "brown",
+    "beige"
+  ],
+  "notable_objects": [
+    "thin vertical tree branches",
+    "green leaves",
+    "dirt ground with scattered dry leaves",
+    "thick tree trunk on the left"
+  ],
+  "on_screen_text": "",
+  "temporal_flow": "The kitten starts in a stationary crouching position in the mid-ground and progressively walks forward towards the camera, growing larger in the frame until it fills the center foreground.",
+  "scene_category": "animal",
+  "main_subject_attributes": [
+    "orange fur with faint tabby stripes",
+    "large round eyes",
+    "pink nose",
+    "fluffy texture",
+    "upright tail in later frames"
+  ],
+  "foreground_background": "Foreground consists of dirt ground and low-hanging leaves; background features a thick tree trunk on the left and dense brush/foliage behind the kitten.",
+  "spatial_layout": "The kitten is centered horizontally, moving from the middle depth plane to the immediate foreground; a large tree trunk anchors the left side, while thin branches frame the right side.",
+  "approximate_counts": [
+    "one kitten",
+    "one large tree trunk",
+    "multiple thin branches"
+  ],
+  "visible_motion": [
+    "kitten walking forward",
+    "paws lifting and placing",
+    "tail raising vertically"
+  ],
+  "uncertain_or_ambiguous": [
+    "exact breed of the kitten",
+    "specific location name"
+  ],
+  "do_not_claim": [
+    "the kitten is meowing",
+    "the kitten is hunting",
+    "there are other animals present"
+  ]
+}
+
+  [formal] An orange tabby kitten with faint stripes and large round eyes walks forward across sun-dappled dirt, its tail raised upright as it moves beneath dense green foliage.
+    accuracy=1.0  style_match=1.0  reasoning=The caption is fully grounded in the visual evidence and perfectly adheres to the formal, objective, and precise style definition without editorializing.
+
+  [sarcastic] Truly an act of staggering bravery, walking three steps forward through dry leaves with a tail held high like a tiny victorious flag.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the kitten's movement and tail position while perfectly executing the target style by mock-praising a mundane action with deadpan, ironic grandeur.
+
+  [humorous_non_tech] The orange tabby marches forward with its tail held high like a tiny flag planted by someone who just discovered the entire forest belongs to them now.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the kitten's confident walk and upright tail while perfectly capturing the requested warm, witty, and non-technical tone through a relatable personification.
+
+  [humorous_tech] The kitten starts as a tiny background process, then walks straight at the camera until it owns the entire foreground -- the most aggressive zoom-to-front commit you'll ever see from eight inches of fluff.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the kitten's movement from background to foreground and uses a precise, humorous version-control analogy ('zoom-to-front commit') that perfectly maps to the visual action without relying on generic tech tropes.
+
+================================================================================
+[TUNED] TASK v3  https://storage.googleapis.com/amd-hackathon-clips/3044693-uhd_3840_2160_24fps.mp4
+================================================================================
+Stage A description:
+{
+  "subjects": [
+    "a woman with dark hair in a high bun"
+  ],
+  "setting": "a modern office with white desks and circular ceiling lights",
+  "actions": [
+    "sitting at a desk",
+    "typing on a keyboard",
+    "looking at a computer monitor",
+    "glancing down at hands"
+  ],
+  "mood": "focused, professional",
+  "colors": [
+    "white",
+    "black",
+    "beige",
+    "orange",
+    "green"
+  ],
+  "notable_objects": [
+    "desktop computer monitor",
+    "white keyboard",
+    "black computer mouse",
+    "potted green plant",
+    "cross necklace",
+    "circular ceiling lights"
+  ],
+  "on_screen_text": "",
+  "temporal_flow": "The woman remains seated at the desk throughout, alternating her gaze between the monitor and her hands while typing, with a slight camera zoom-in occurring towards the end.",
+  "scene_category": "people",
+  "main_subject_attributes": [
+    "dark hair styled in a high bun",
+    "wearing a light beige jacket over an orange top",
+    "silver cross necklace",
+    "pink fingernails",
+    "stud earrings"
+  ],
+  "foreground_background": "The woman and her computer setup are in the mid-ground, with a large black monitor back partially obscuring the right foreground and office furniture/plants in the background.",
+  "spatial_layout": "The woman is centered, facing right towards the monitor; the mouse is to her left on the desk; the plant is behind her to the left.",
+  "approximate_counts": [
+    "one woman",
+    "one computer setup",
+    "one plant"
+  ],
+  "visible_motion": [
+    "finger movement while typing",
+    "head turning between screen and keyboard",
+    "subtle camera zoom in"
+  ],
+  "uncertain_or_ambiguous": [
+    "specific content on the computer screen is not visible"
+  ],
+  "do_not_claim": [
+    "what she is working on",
+    "the specific time of day",
+    "identities of any background figures"
+  ]
+}
+
+  [formal] A woman in a beige jacket and orange top sits at a white office desk, typing on a keyboard as she shifts her gaze between the monitor and her pink-nailed hands.
+    accuracy=1.0  style_match=1.0  reasoning=The caption is factually precise regarding the subject's attire, actions, and environment, and it adheres perfectly to the formal, objective, and declarative style requirements.
+
+  [humorous_non_tech] She keeps glancing down at her pink fingernails like they might have figured something out while she wasn't looking.
+    accuracy=0.2  style_match=1.0  reasoning=The caption perfectly captures the requested humorous, relatable tone, but it is factually incorrect as the woman is looking at her computer screen, not glancing down at her fingernails.
+
+  [sarcastic] Truly riveting content -- she glances at her hands mid-typing, as if the pink nails might have typed something she didn't authorize.
+    accuracy=0.9  style_match=1.0  reasoning=The caption accurately describes the visible action of typing and glancing at pink nails, while perfectly executing the dry, ironic tone required by mocking the mundane nature of the stock footage.
+
+  [humorous_tech] She keeps glancing down at her hands while typing, like someone running code but checking the terminal every few seconds just to make sure it hasn't silently crashed.
+    accuracy=0.2  style_match=0.9  reasoning=The caption falsely claims the woman is glancing down at her hands, whereas the frames clearly show her looking intently at the monitor screen the entire time.
+
+================================================================================
+[TUNED] TASK nature_waterfall  https://assets.mixkit.co/videos/2213/2213-1080.mp4
+================================================================================
+Stage A description:
+{
+  "subjects": [
+    "a cascading waterfall",
+    "rocky cliff face",
+    "surrounding vegetation"
+  ],
+  "setting": "a lush, rocky natural gorge or forest",
+  "actions": [
+    "water flowing continuously downwards",
+    "mist rising from the impact",
+    "water splashing over rock ledges"
+  ],
+  "mood": "serene, natural",
+  "colors": [
+    "dark grey",
+    "white",
+    "various shades of green",
+    "brown"
+  ],
+  "notable_objects": [
+    "jagged dark rocks",
+    "green moss",
+    "foliage",
+    "water spray"
+  ],
+  "on_screen_text": "",
+  "temporal_flow": "The scene remains a static shot of the waterfall with continuous, fluid motion of the falling water and shifting mist patterns throughout the duration.",
+  "scene_category": "nature",
+  "main_subject_attributes": [
+    "white foamy water",
+    "dark wet stone",
+    "green mossy patches",
+    "dense leafy trees"
+  ],
+  "foreground_background": "The waterfall and immediate rocky outcrops form the foreground and midground, while dense trees and shadowed rock walls form the background.",
+  "spatial_layout": "The waterfall flows centrally from top to bottom, flanked by rocky terrain on the left and vegetation on the right.",
+  "approximate_counts": [
+    "one main waterfall",
+    "multiple rock tiers"
+  ],
+  "visible_motion": [
+    "rapid downward flow of water",
+    "drifting mist",
+    "splashing droplets"
+  ],
+  "uncertain_or_ambiguous": [
+    "exact height of the waterfall",
+    "specific plant species"
+  ],
+  "do_not_claim": [
+    "sound of the water",
+    "location name",
+    "time of day",
+    "weather conditions beyond visible light"
+  ]
+}
+
+  [formal] A white waterfall cascades down tiered dark rock in a forested gorge, sending mist upward as moss and dense foliage frame the cliff on either side.
+    accuracy=1.0  style_match=1.0  reasoning=The caption is fully grounded in the visual evidence and perfectly executes the formal, objective style with precise, non-editorializing language in a single declarative sentence.
+
+  [sarcastic] Truly groundbreaking footage of water doing the one thing water has reliably done since the dawn of time: falling downward next to some rocks.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visible waterfall and rocks while perfectly executing the target style through deadpan mock-praise of a mundane natural phenomenon.
+
+  [humorous_tech] A waterfall that's just endlessly flushing every rock ledge in its path, and somehow none of them ever clear their cache.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visual of water cascading over rocks and uses a precise, accessible tech analogy (cache clearing) that perfectly maps to the endless, repetitive nature of the waterfall.
+
+  [humorous_non_tech] The water is throwing itself down those dark rock ledges with the kind of dramatic commitment usually reserved for people who've just been told the buffet is closing.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visual action of the waterfall while perfectly nailing the warm, relatable, non-technical humor style through a specific and funny human analogy.
+
+================================================================================
+[TUNED] TASK urban_city_night  https://assets.mixkit.co/videos/4308/4308-1080.mp4
+================================================================================
+Stage A description:
+{
+  "subjects": [
+    "dense urban cityscape",
+    "red and white lattice tower",
+    "tall slender distant tower"
+  ],
+  "setting": "aerial view of a major metropolis at dusk transitioning to night",
+  "actions": [
+    "sky darkening from twilight to deep blue",
+    "city lights illuminating buildings and streets",
+    "clouds shifting across the sky"
+  ],
+  "mood": "serene, transitional",
+  "colors": [
+    "pale blue",
+    "soft pink",
+    "grey",
+    "deep navy blue",
+    "red",
+    "white",
+    "yellow",
+    "green"
+  ],
+  "notable_objects": [
+    "red and white broadcast tower",
+    "green glass skyscraper",
+    "slender distant tower",
+    "illuminated windows",
+    "street lights"
+  ],
+  "on_screen_text": "",
+  "temporal_flow": "The scene transitions from a cloudy dusk sky with soft pink hues to a dark night sky, accompanied by the gradual illumination of thousands of city lights and the brightening of the red tower.",
+  "scene_category": "urban",
+  "main_subject_attributes": [
+    "high-density architecture",
+    "mix of skyscrapers and low-rise buildings",
+    "red and white structural tower",
+    "illuminated lattice structure"
+  ],
+  "foreground_background": "Foreground consists of dense mid-rise and high-rise buildings; background features the horizon line, distant towers, and the expansive sky.",
+  "spatial_layout": "The red tower is positioned on the right side of the frame; a slender distant tower is visible on the far left; the city center fills the middle ground.",
+  "approximate_counts": [
+    "hundreds of visible buildings",
+    "two prominent towers"
+  ],
+  "visible_motion": [
+    "time-lapse acceleration of cloud movement",
+    "rapid transition of ambient light levels",
+    "sequential appearance of artificial lights"
+  ],
+  "uncertain_or_ambiguous": [
+    "specific identity of the city (though visually recognizable)",
+    "exact time of day"
+  ],
+  "do_not_claim": [
+    "specific names of buildings",
+    "weather conditions beyond visible clouds",
+    "human activity inside buildings"
+  ]
+}
+
+  [formal] A red and white lattice tower anchors the right side of the frame as dusk deepens to navy blue and the lights of a dense metropolis switch on across hundreds of buildings.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visual transition from dusk to night and the illumination of the city, maintaining a precise, objective, and professional tone throughout.
+
+  [humorous_tech] The city's lights are booting up one window at a time as the sun goes down, but that red lattice tower is the one background process that refused to wait for night mode.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visual transition from dusk to night and the persistent red tower, while the 'background process' analogy perfectly maps to the tower's constant illumination amidst the changing city lights.
+
+  [sarcastic] What a treat to watch a city that finally figured out how to turn on its lights, with a red and white tower standing by in case anyone forgot what bragging looks like.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visual transition from dusk to night and the prominent tower, while perfectly executing the target style through dry, mock-praise of the mundane act of turning on city lights.
+
+  [humorous_non_tech] The red and white lattice tower lights up like the one overachiever in a city that just realized it's dark out and should probably do something about it.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visual transition of the tower lighting up at dusk and perfectly captures the requested warm, relatable humor by personifying the tower as an eager overachiever.
+
+================================================================================
+[TUNED] TASK animal_lions  https://assets.mixkit.co/videos/11054/11054-720.mp4
+================================================================================
+Stage A description:
+{
+  "subjects": [
+    "a large male lion with a dark mane",
+    "a younger male lion with a shorter mane"
+  ],
+  "setting": "a dirt track in a dry, grassy savanna environment with scattered bushes",
+  "actions": [
+    "walking from right to left along the path",
+    "following one another in a line"
+  ],
+  "mood": "calm, natural",
+  "colors": [
+    "tan",
+    "brown",
+    "reddish-orange",
+    "dry yellow",
+    "green"
+  ],
+  "notable_objects": [
+    "reddish dirt road",
+    "dry tall grass",
+    "green leafy bushes"
+  ],
+  "on_screen_text": "",
+  "temporal_flow": "The two lions walk steadily from the right side of the frame toward the left, moving along a dirt path past vegetation.",
+  "scene_category": "nature",
+  "main_subject_attributes": [
+    "large size",
+    "thick dark mane on the leading lion",
+    "shorter lighter mane on the following lion",
+    "tan fur",
+    "quadrupedal stance"
+  ],
+  "foreground_background": "The lions and the dirt track are in the foreground and mid-ground, while tall dry grass and bushes form the background.",
+  "spatial_layout": "The larger lion leads on the left, with the smaller lion following closely behind on the right; both are oriented towards the left.",
+  "approximate_counts": [
+    "two lions"
+  ],
+  "visible_motion": [
+    "The lions walk forward with a steady gait; the camera pans slightly to the left to track their movement."
+  ],
+  "uncertain_or_ambiguous": [
+    "exact age of the younger lion",
+    "specific geographic location"
+  ],
+  "do_not_claim": [
+    "they are hunting",
+    "they are a father and son",
+    "specific park name"
+  ]
+}
+
+  [formal] A large male lion with a dark mane leads a younger, shorter-maned lion along a reddish dirt track through dry grass and scattered green bushes in the savanna.
+    accuracy=1.0  style_match=1.0  reasoning=The caption is factually precise regarding the subjects and environment, and it perfectly adheres to the formal, objective, single-sentence style definition.
+
+  [humorous_non_tech] The younger lion is following the big guy down the dirt road like he's not entirely sure where they're going but absolutely doesn't want to be left behind.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visual action of the lions walking on the dirt road while perfectly capturing the requested warm, relatable humor by projecting a familiar human dynamic onto the animals without using any technical language.
+
+  [humorous_tech] The older lion walks the dirt path first while the younger one trails close behind, proving that even in the wild, the senior dev ships before the junior's branch gets merged.
+    accuracy=0.0  style_match=0.9  reasoning=The caption falsely claims the older lion walks first, but the frames clearly show the younger lion leading the entire sequence; however, the tech analogy is witty and fits the visual hierarchy perfectly.
+
+  [sarcastic] Because nothing projects fearsome apex predator energy quite like a polite single-file stroll down a dirt road past some bushes.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visual action of lions walking in a line while perfectly executing the target style by ironically contrasting their reputation as apex predators with their mundane, orderly behavior.
+
+================================================================================
+[TUNED] TASK people_walking  https://assets.mixkit.co/videos/43148/43148-1080.mp4
+================================================================================
+Stage A description:
+{
+  "subjects": [
+    "two hikers walking away from the camera"
+  ],
+  "setting": "a forest trail with burnt trees and mountains in the background",
+  "actions": [
+    "walking along a dirt path",
+    "carrying backpacks",
+    "turning head to look at the scenery"
+  ],
+  "mood": "serene, adventurous",
+  "colors": [
+    "grey",
+    "olive green",
+    "dark brown",
+    "muted blue",
+    "charcoal"
+  ],
+  "notable_objects": [
+    "large olive-green hiking backpack",
+    "grey puffer jacket",
+    "dark beanie",
+    "crossbody bag with pink strap",
+    "trekking pole",
+    "wooden shelter structure",
+    "charred tree trunks"
+  ],
+  "on_screen_text": "",
+  "temporal_flow": "The two hikers walk steadily away from the camera down a trail, and in the final frame, the person in the foreground turns their head to the right to look at the landscape.",
+  "scene_category": "nature",
+  "main_subject_attributes": [
+    "person in foreground wearing grey puffer jacket, dark beanie, and crossbody bag",
+    "person in background wearing dark jacket, green cap, and large olive backpack",
+    "both seen from behind"
+  ],
+  "foreground_background": "The hikers occupy the center foreground, while the background consists of a forest of burnt trees, a wooden shelter on the right, and distant mountains.",
+  "spatial_layout": "The hikers are centered on the path, with the foreground subject slightly to the right of the background subject; a shelter is visible on the right side of the mid-ground.",
+  "approximate_counts": [
+    "two people",
+    "two backpacks",
+    "one shelter"
+  ],
+  "visible_motion": [
+    "forward walking motion of the subjects",
+    "head turn of the foreground subject in the last frame",
+    "slight camera follow movement"
+  ],
+  "uncertain_or_ambiguous": [
+    "exact gender of the hikers",
+    "specific location name",
+    "cause of the tree damage (though they appear burnt)"
+  ],
+  "do_not_claim": [
+    "that the hikers are talking",
+    "that they have reached a destination",
+    "specific brand names of the gear"
+  ]
+}
+
+  [formal] Two hikers proceed down a dirt trail through a stand of charred tree trunks, the one in a grey puffer jacket turning to regard the mountains beyond as a wooden shelter stands to the right.
+    accuracy=1.0  style_match=1.0  reasoning=The caption is factually precise regarding the visual elements and adheres perfectly to the formal, objective, and declarative style constraints.
+
+  [humorous_non_tech] The pink strap on that crossbody bag is carrying a lot of personality through a forest of trees that didn't make it.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately identifies the visible pink strap and the burnt forest setting, while perfectly capturing the requested warm, witty, and non-technical tone through its personification of the accessory.
+
+  [sarcastic] Because nothing complements a serene forest stroll quite like a corridor of charred tree trunks and a backpack roughly the size of a small refrigerator.
+    accuracy=0.9  style_match=1.0  reasoning=The caption accurately identifies the burnt trees and large backpack while perfectly executing the dry, ironic tone required by the style definition.
+
+  [humorous_tech] The hikers are walking through a forest of charred tree trunks like two users navigating a production environment right after a bad deploy, with that wooden shelter standing by as the only rollback point.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visual elements (hikers, charred forest, shelter) and executes the humorous tech style perfectly by using a specific, apt analogy (bad deploy/rollback) that maps precisely to the scene's atmosphere and objects.
+
+================================================================================
+[TUNED] TASK weather_rain  https://assets.mixkit.co/videos/27704/27704-720.mp4
+================================================================================
+Stage A description:
+{
+  "subjects": [
+    "heavy rain",
+    "wet pavement",
+    "passing vehicles"
+  ],
+  "setting": "wet urban street at night",
+  "actions": [
+    "rain falling heavily",
+    "water splashing on ground",
+    "vehicles driving past in background",
+    "light reflecting on wet surface"
+  ],
+  "mood": "dark, rainy",
+  "colors": [
+    "black",
+    "dark grey",
+    "white",
+    "orange",
+    "yellow"
+  ],
+  "notable_objects": [
+    "metal grate",
+    "vertical pole",
+    "manhole cover",
+    "car headlights",
+    "vehicle wheels"
+  ],
+  "on_screen_text": "",
+  "temporal_flow": "The scene remains a static shot of a rainy street corner where rain intensity fluctuates slightly and vehicles periodically pass through the upper background, casting moving reflections on the wet ground.",
+  "scene_category": "urban",
+  "main_subject_attributes": [
+    "dark wet asphalt",
+    "textured metal grate",
+    "falling rain streaks",
+    "bright artificial light reflections"
+  ],
+  "foreground_background": "Foreground features a metal grate and wet pavement; background shows a street with passing traffic and a vertical pole.",
+  "spatial_layout": "Metal grate occupies the bottom left; a vertical pole stands on the right side; vehicle traffic moves horizontally across the top edge.",
+  "approximate_counts": [
+    "one metal grate",
+    "one vertical pole",
+    "several passing vehicles"
+  ],
+  "visible_motion": [
+    "continuous falling rain",
+    "splashing water droplets",
+    "horizontal movement of vehicles in background",
+    "shifting light reflections"
+  ],
+  "uncertain_or_ambiguous": [
+    "exact type of vehicles due to low light and motion blur",
+    "specific location identity"
+  ],
+  "do_not_claim": [
+    "specific city or country",
+    "time of day beyond night",
+    "identifiable license plates or brands"
+  ]
+}
+
+  [formal] Heavy rain falls across a dark urban street at night, where passing vehicles cast streaks of headlight reflection across wet asphalt surrounding a metal grate and vertical pole.
+    accuracy=1.0  style_match=1.0  reasoning=The caption is fully grounded in the visual evidence and perfectly executes the formal, objective, and precise style definition without editorializing.
+
+  [sarcastic] Truly a stroke of urban planning genius to showcase a metal grate and manhole cover under the one weather condition guaranteed to make them indistinguishable from a shallow lake.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visible flooded grate and perfectly executes the dry, ironic mock-praise style required.
+
+  [humorous_non_tech] The metal grate is sitting there doing its job in the pouring rain with the quiet dignity of infrastructure nobody ever thanks.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visible rain and grate while perfectly capturing the requested warm, relatable humor about unappreciated everyday objects without using any technical jargon.
+
+  [humorous_tech] The street's drainage grate sits there processing rain like a single-threaded API handling a traffic spike, with headlights as the only proof the queue is still moving.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visible elements (grate, rain, headlights) and uses a precise, non-generic tech analogy (single-threaded API bottleneck) that perfectly maps to the visual of a drain struggling with heavy rainfall.
+
+================================================================================
+[TUNED] TASK sports_soccer  https://assets.mixkit.co/videos/43494/43494-1080.mp4
+================================================================================
+Stage A description:
+{
+  "subjects": [
+    "a male soccer player",
+    "a white and blue soccer ball"
+  ],
+  "setting": "an outdoor soccer field at night under bright floodlights",
+  "actions": [
+    "standing with hands on hips",
+    "running towards the ball",
+    "kicking the ball",
+    "walking past the camera"
+  ],
+  "mood": "focused, athletic",
+  "colors": [
+    "green",
+    "black",
+    "white",
+    "maroon",
+    "grey"
+  ],
+  "notable_objects": [
+    "soccer ball",
+    "floodlights",
+    "white field line",
+    "grey soccer cleats",
+    "black socks"
+  ],
+  "on_screen_text": "",
+  "temporal_flow": "The player starts in the background, runs forward to kick the ball in the foreground, and then walks out of the frame to the right.",
+  "scene_category": "sports",
+  "main_subject_attributes": [
+    "maroon t-shirt with black sleeves",
+    "black shorts",
+    "black knee-high socks",
+    "grey cleats with white stripes",
+    "short dark hair"
+  ],
+  "foreground_background": "The soccer ball and white line are in the immediate foreground; the player moves from the mid-ground to the foreground; floodlights and dark structures are in the background.",
+  "spatial_layout": "Low angle shot; the ball is positioned on the right side of the frame initially, while the player approaches from the center-left background.",
+  "approximate_counts": [
+    "one player",
+    "one ball",
+    "three visible floodlights"
+  ],
+  "visible_motion": [
+    "player running forward",
+    "leg swinging to kick",
+    "player walking right",
+    "camera remains static at low angle"
+  ],
+  "uncertain_or_ambiguous": [
+    "specific text on the shirt is blurry",
+    "exact location of the field"
+  ],
+  "do_not_claim": [
+    "the player scores a goal",
+    "the brand of the ball",
+    "the score of a game"
+  ]
+}
+
+  [formal] A player in a maroon shirt and grey cleats runs across a floodlit night field to strike a white and blue soccer ball resting near a chalk line, then walks out of frame.
+    accuracy=0.9  style_match=1.0  reasoning=The caption is stylistically perfect and highly accurate, though it describes the player walking 'out of frame' when the final frames actually show the player walking past the camera while remaining partially visible.
+
+  [humorous_non_tech] He went through all the trouble of running up under those floodlights in his grey cleats just to kick the ball once and walk off like he'd finished the whole shift.
+    accuracy=0.9  style_match=1.0  reasoning=The caption perfectly captures the witty, relatable tone of the target style and accurately describes the visual sequence, with only a minor subjective interpretation of the player's attitude.
+
+  [sarcastic] Truly heroic to sprint under three floodlights just to boot one ball and immediately leave the frame like your work here is done.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visible actions (sprinting, kicking, leaving) while perfectly executing the dry, mock-praising sarcastic tone defined in the prompt.
+
+  [humorous_tech] He boots the ball, then immediately walks out of frame like a dev shipping a hotfix and logging off before anyone can file a bug report.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visible action (kicking and walking away) and uses a precise, relatable dev analogy (shipping a hotfix and logging off) that perfectly maps to the specific behavior shown.
+
+================================================================================
+[TUNED] TASK food_chef  https://assets.mixkit.co/videos/1669/1669-1080.mp4
+================================================================================
+Stage A description:
+{
+  "subjects": [
+    "a round ball of dough"
+  ],
+  "setting": "a wooden surface with a blurred grey background",
+  "actions": [
+    "white powder falling onto the dough",
+    "powder accumulating on the surface"
+  ],
+  "mood": "calm, culinary",
+  "colors": [
+    "beige",
+    "white",
+    "grey",
+    "light brown"
+  ],
+  "notable_objects": [
+    "dough ball",
+    "falling flour particles",
+    "wooden table"
+  ],
+  "on_screen_text": "",
+  "temporal_flow": "The scene remains static with the dough centered, while white powder continuously falls from above, gradually increasing the coverage on the dough's top surface and the surrounding table.",
+  "scene_category": "food",
+  "main_subject_attributes": [
+    "round shape",
+    "smooth texture",
+    "pale yellow-beige color",
+    "stationary position"
+  ],
+  "foreground_background": "The dough and the flour-dusted wooden surface are in the sharp foreground, while the background is a soft, out-of-focus grey wall.",
+  "spatial_layout": "The dough is centered horizontally and occupies the middle-lower portion of the frame.",
+  "approximate_counts": [
+    "one dough ball"
+  ],
+  "visible_motion": [
+    "continuous downward drift of fine white particles",
+    "static camera angle"
+  ],
+  "uncertain_or_ambiguous": [
+    "exact type of dough (e.g., bread vs. pizza)",
+    "specific type of powder (likely flour but not labeled)"
+  ],
+  "do_not_claim": [
+    "hands are kneading the dough",
+    "the dough is rising or expanding",
+    "specific brand of ingredients"
+  ]
+}
+
+  [formal] A pale beige ball of dough sits centered on a wooden table as fine white powder drifts downward, gradually dusting both its surface and the surrounding wood.
+    accuracy=1.0  style_match=1.0  reasoning=The caption is factually precise regarding the visual elements and adheres perfectly to the formal, objective, and declarative style requirements.
+
+  [sarcastic] Because the dough wasn't pale and beige enough already, a gentle rain of flour is here to make absolutely certain.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visual action of flouring dough while perfectly executing the target style through dry, mock-serious commentary on the redundancy of the act.
+
+  [humorous_non_tech] That dough ball is just sitting there patiently getting snowed on like it booked a spa day it definitely didn't pay for.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visual of flour dusting the dough and perfectly captures the requested warm, relatable humor through the 'spa day' metaphor without using any technical terms.
+
+  [humorous_tech] The flour just keeps falling onto a dough ball that's doing absolutely nothing about it — basically a server silently receiving an endless packet flood it has no intention of handling.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visual of flour falling on static dough and uses a precise, accessible tech analogy (packet flood) that perfectly maps to the scene's passive reception of incoming data.
+
+================================================================================
+[TUNED] TASK tech_vr  https://assets.mixkit.co/videos/51214/51214-1080.mp4
+================================================================================
+Stage A description:
+{
+  "subjects": [
+    "a person with platinum blonde hair and futuristic eyewear"
+  ],
+  "setting": "a dark, black background environment",
+  "actions": [
+    "wearing glowing visor glasses",
+    "gesturing with hands",
+    "wearing finger-mounted sensors",
+    "looking forward and slightly down"
+  ],
+  "mood": "futuristic, cyberpunk",
+  "colors": [
+    "black",
+    "white",
+    "cyan",
+    "neon blue",
+    "silver"
+  ],
+  "notable_objects": [
+    "glowing hexagonal-pattern visor",
+    "finger sensors with wires",
+    "metallic silver nail polish",
+    "lip piercing",
+    "white hoodie"
+  ],
+  "on_screen_text": "",
+  "temporal_flow": "The subject begins with hands raised near the face wearing sensors, then lowers them while maintaining a steady gaze through the glowing visor, before raising a hand again in a gesturing motion towards the end.",
+  "scene_category": "technology",
+  "main_subject_attributes": [
+    "platinum blonde bob haircut with bangs",
+    "white hooded sweatshirt",
+    "silver metallic fingernails",
+    "silver lip ring",
+    "illuminated eyewear with honeycomb design"
+  ],
+  "foreground_background": "The person's face and hands are in the immediate foreground against a solid black background.",
+  "spatial_layout": "The subject is centered in the frame, occupying the majority of the visual space.",
+  "approximate_counts": [
+    "one person",
+    "one visor",
+    "multiple finger sensors"
+  ],
+  "visible_motion": [
+    "hand movements involving pointing and gesturing",
+    "slight head tilting",
+    "subtle facial expression changes"
+  ],
+  "uncertain_or_ambiguous": [
+    "specific function of the finger sensors",
+    "exact nature of the visor (hologram vs physical light)"
+  ],
+  "do_not_claim": [
+    "the person is playing a video game",
+    "the visor is displaying specific data",
+    "the location is a specific studio or room"
+  ]
+}
+
+  [formal] A person in a white hoodie wears a glowing hexagonal-pattern visor against a black background, gesturing with sensor-equipped fingers beneath platinum blonde bangs.
+    accuracy=1.0  style_match=1.0  reasoning=The caption is a precise, single declarative sentence that accurately describes all visible elements (visor pattern, finger sensors, hair, clothing) in a neutral, professional tone without speculation or filler.
+
+  [sarcastic] Because nothing says cutting-edge futurism quite like wired-up fingertips gesturing at absolutely nothing in the dark.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visible elements (wired fingers, gesturing, dark background, futuristic aesthetic) and perfectly executes the dry, ironic tone by mock-praising the mundane action as 'cutting-edge futurism'.
+
+  [humorous_tech] Wearing finger sensors wired to nothing visible, gesturing at a honeycomb visor that's clearly rendering every frame -- the universal sign of someone whose code has no input validation but plenty of UI polish.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visible finger sensors and honeycomb visor, and the 'no input validation but plenty of UI polish' analogy perfectly maps to the contrast between the complex-looking hand gestures and the purely aesthetic, non-functional nature of the prop.
+
+  [humorous_non_tech] The honeycomb visor says "I'm from the future," but the finger sensors on wires say "I also have to be home by eleven."
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visible futuristic visor and wired finger sensors while perfectly capturing the requested humorous, non-technical tone through a relatable observation about the contrast between high-tech aesthetics and mundane reality.
+
+================================================================================
+[TUNED] TASK nature_ocean_waves  https://assets.mixkit.co/videos/48525/48525-720.mp4
+================================================================================
+Stage A description:
+{
+  "subjects": [
+    "ocean waves",
+    "rocky shoreline"
+  ],
+  "setting": "aerial view of a rocky coast",
+  "actions": [
+    "waves rolling in from the top",
+    "white foam crashing against rocks",
+    "water receding and swirling"
+  ],
+  "mood": "dynamic, powerful",
+  "colors": [
+    "dark teal",
+    "white",
+    "black",
+    "turquoise"
+  ],
+  "notable_objects": [
+    "jagged black rocks",
+    "white sea foam",
+    "breaking wave crest"
+  ],
+  "on_screen_text": "",
+  "temporal_flow": "A large wave approaches from the top of the frame, breaks into a wide line of white foam across the center, crashes over the submerged rocks, and then slowly recedes leaving swirling patterns of foam.",
+  "scene_category": "nature",
+  "main_subject_attributes": [
+    "dark blue-green water",
+    "bright white foam",
+    "irregular black rock formations"
+  ],
+  "foreground_background": "foreground consists of the rocky shore and churning surf; background is the deeper, darker ocean water at the top",
+  "spatial_layout": "top-down orthographic view; deep water occupies the upper third, breaking wave spans the middle horizontally, rocks and foam dominate the lower section",
+  "approximate_counts": [
+    "one main breaking wave",
+    "numerous scattered rocks"
+  ],
+  "visible_motion": [
+    "horizontal movement of the wave crest from top to bottom",
+    "turbulent churning of water over rocks",
+    "expansion and contraction of white foam"
+  ],
+  "uncertain_or_ambiguous": [
+    "exact depth of the water",
+    "specific geographic location"
+  ],
+  "do_not_claim": [
+    "time of day",
+    "weather conditions beyond visible water state",
+    "presence of any people or animals"
+  ]
+}
+
+  [formal] A dark teal wave breaks into a line of white foam across jagged black rocks, the crest advancing from deep water above as spent surf swirls among the formations below.
+    accuracy=1.0  style_match=1.0  reasoning=The caption precisely describes the visible aerial view of the wave breaking over rocks with professional, objective language and no editorializing.
+
+  [humorous_tech] The wave writes a full row of white foam across the rocks, then immediately rolls it back — like a deploy that hit production, panicked, and tried to silently revert before anyone noticed.
+    accuracy=0.9  style_match=1.0  reasoning=The caption accurately describes the visual action of the wave advancing and receding, and the analogy of a panicked production deploy rollback is a precise, humorous fit for that specific motion.
+
+  [humorous_non_tech] The ocean showed up to punch those jagged black rocks, and honestly, the rocks don't seem even slightly impressed.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visual action of waves hitting rocks while perfectly nailing the witty, personified tone of a humorous friend without using any technical language.
+
+  [sarcastic] Truly heroic of those jagged black rocks to stand their ground against an entire ocean, as if the sea hadn't been doing this since long before they showed up.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visible rocks and waves while perfectly executing the target style through dry, mock-praise and an ironic gap regarding the rocks' 'heroism'.
+
+================================================================================
+[TUNED] TASK animal_birds  https://assets.mixkit.co/videos/11007/11007-720.mp4
+================================================================================
+Stage A description:
+{
+  "subjects": [
+    "two white cockatoos with yellow crests"
+  ],
+  "setting": "outdoor natural environment with blurred trees",
+  "actions": [
+    "preening",
+    "nuzzling",
+    "touching beaks",
+    "standing close together"
+  ],
+  "mood": "intimate, calm",
+  "colors": [
+    "white",
+    "yellow",
+    "grey",
+    "dark green",
+    "brown"
+  ],
+  "notable_objects": [
+    "yellow head crests",
+    "grey curved beaks",
+    "white feathers"
+  ],
+  "on_screen_text": "",
+  "temporal_flow": "The two birds engage in close physical contact and mutual preening throughout the clip, occasionally separating slightly before returning to touch beaks or heads.",
+  "scene_category": "animal",
+  "main_subject_attributes": [
+    "white plumage",
+    "prominent yellow crests",
+    "dark grey beaks",
+    "dark eyes"
+  ],
+  "foreground_background": "Sharp focus on the two birds in the foreground; out-of-focus tree branches and foliage in the background.",
+  "spatial_layout": "Two birds positioned side-by-side in the center of the frame, facing each other or angled inward.",
+  "approximate_counts": [
+    "two birds"
+  ],
+  "visible_motion": [
+    "head bobbing",
+    "beak movement during grooming",
+    "slight body shifting"
+  ],
+  "uncertain_or_ambiguous": [
+    "specific species identification beyond visual traits",
+    "exact nature of the interaction (social vs mating)"
+  ],
+  "do_not_claim": [
+    "the birds are a mating pair",
+    "the location is a specific zoo or wild habitat",
+    "the birds are communicating verbally"
+  ]
+}
+
+  [formal] Two white cockatoos with prominent yellow crests stand side by side against a blurred backdrop of trees, touching their grey beaks together as they preen each other's feathers.
+    accuracy=1.0  style_match=1.0  reasoning=The caption is factually precise regarding the birds' appearance and actions, and it adheres perfectly to the formal, objective, single-sentence style definition.
+
+  [humorous_tech] Two cockatoos running a perpetual merge conflict — each one keeps applying the same grooming patch to the other, and neither branch ever fully resolves.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the mutual grooming behavior and uses a precise, illuminating 'merge conflict' analogy that perfectly captures the repetitive, unresolved nature of the interaction without relying on generic tech tropes.
+
+  [humorous_non_tech] These two cockatoos are doing the beak-to-beak equivalent of fixing each other's hair before a night out, and neither one is willing to admit the other missed a spot.
+    accuracy=1.0  style_match=1.0  reasoning=The caption perfectly captures the preening behavior with a relatable, witty human analogy that fits the humorous_non_tech style without any technical jargon.
+
+  [sarcastic] Nothing says personal space quite like pressing your grey curved beak directly into another bird's face and calling it a lifestyle.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visible physical interaction (beak-to-face contact) and perfectly executes the target sarcastic style by ironically framing intimate grooming as a violation of 'personal space' with deadpan restraint.
+
+================================================================================
+[TUNED] TASK tech_animation  https://assets.mixkit.co/videos/99786/99786-1080.mp4
+================================================================================
+Stage A description:
+{
+  "subjects": [
+    "isometric digital interface elements",
+    "circuit board pattern"
+  ],
+  "setting": "abstract dark digital background with circuit traces",
+  "actions": [
+    "elements sliding into view",
+    "holographic screens appearing",
+    "data charts populating on screens"
+  ],
+  "mood": "futuristic, technological",
+  "colors": [
+    "dark navy blue",
+    "neon cyan",
+    "magenta",
+    "purple",
+    "teal"
+  ],
+  "notable_objects": [
+    "smartphone-shaped device",
+    "tablet-shaped device",
+    "floating holographic dashboard",
+    "square processor chips",
+    "bar charts",
+    "pie charts",
+    "line graphs"
+  ],
+  "on_screen_text": "",
+  "temporal_flow": "The scene begins with a single chip on a circuit background, then progressively reveals multiple devices and floating data screens that populate with colorful charts and graphs.",
+  "scene_category": "technology",
+  "main_subject_attributes": [
+    "glowing neon edges",
+    "isometric perspective",
+    "translucent holographic overlays",
+    "geometric data visualizations"
+  ],
+  "foreground_background": "Foreground contains the colorful 3D devices and holograms; background is a flat dark blue surface with lighter blue circuit lines.",
+  "spatial_layout": "Devices are arranged diagonally across the frame; a large phone is bottom-center, a tablet is mid-left, and a dashboard floats top-left.",
+  "approximate_counts": [
+    "four distinct device/screen elements",
+    "multiple chart types"
+  ],
+  "visible_motion": [
+    "sliding entrance of objects from off-screen",
+    "fading in of holographic projections",
+    "growth of bar chart elements"
+  ],
+  "uncertain_or_ambiguous": [
+    "specific meaning of the data charts",
+    "exact nature of the devices (generic tech representation)"
+  ],
+  "do_not_claim": [
+    "specific brand names",
+    "real-world location",
+    "specific software being used"
+  ]
+}
+
+  [formal] Isometric device mockups and holographic dashboards slide into view over a dark circuit-patterned background, their translucent screens populating with neon-colored bar, pie, and line charts.
+    accuracy=1.0  style_match=1.0  reasoning=The caption is factually precise regarding the visual elements and motion, and it adheres perfectly to the formal, objective, single-sentence constraint without editorializing.
+
+  [humorous_non_tech] The bar charts are growing with the kind of confidence that suggests someone is definitely getting a bonus, even though absolutely no human can read any of it.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visible bar charts and perfectly captures the requested humorous, non-technical tone by making a relatable joke about corporate bonuses and unreadable data.
+
+  [humorous_tech] A single processor chip boots up, spawns four floating dashboards full of charts nobody asked for, and immediately starts presenting KPIs to itself.
+    accuracy=0.9  style_match=1.0  reasoning=The caption accurately describes the visual sequence of a chip activating multiple data dashboards, and the 'presenting KPIs to itself' analogy is a precise, humorous fit for the isolated, self-referential nature of the animation.
+
+  [sarcastic] Truly a breakthrough -- a dashboard full of charts nobody will ever read, floating in the one place guaranteed to make them harder to read.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visible dashboard elements while perfectly executing the dry, ironic tone by mock-praising the impracticality of the design.
+
+================================================================================
+[TUNED] TASK sports_running  https://assets.mixkit.co/videos/23582/23582-720.mp4
+================================================================================
+Stage A description:
+{
+  "subjects": [
+    "four people",
+    "group of friends"
+  ],
+  "setting": "open grassy field with wind turbines on the horizon",
+  "actions": [
+    "running away from camera",
+    "holding hands",
+    "jumping",
+    "raising arms"
+  ],
+  "mood": "energetic",
+  "colors": [
+    "blue",
+    "white",
+    "black",
+    "brown",
+    "red"
+  ],
+  "notable_objects": [
+    "wind turbines",
+    "tall dry grass",
+    "sun"
+  ],
+  "on_screen_text": "",
+  "temporal_flow": "The group runs away from the camera across the field, transitioning from holding hands to jumping with arms raised, and finally spreading out as they move further into the distance.",
+  "scene_category": "people",
+  "main_subject_attributes": [
+    "silhouetted against bright sun",
+    "wearing casual clothing including a white shirt and red top",
+    "dark pants"
+  ],
+  "foreground_background": "Dark, textured dry grass in the immediate foreground; bright sky and distant horizon line in the background.",
+  "spatial_layout": "Subjects are centered horizontally, moving from the middle ground toward the background horizon.",
+  "approximate_counts": [
+    "four people",
+    "several wind turbines"
+  ],
+  "visible_motion": [
+    "Forward running motion away from the viewer, vertical jumping motion, and camera appears to track or remain static while subjects recede."
+  ],
+  "uncertain_or_ambiguous": [
+    "exact gender of all individuals due to backlighting",
+    "specific facial expressions"
+  ],
+  "do_not_claim": [
+    "specific location name",
+    "relationship between the people",
+    "time of day beyond visible sun position"
+  ]
+}
+
+  [formal] Four silhouetted figures run across a dry grassy field toward a horizon lined with wind turbines, their arms raised as they jump against the bright sun.
+    accuracy=0.9  style_match=1.0  reasoning=The caption is visually accurate and perfectly adheres to the formal, objective style, though it slightly generalizes the action by implying all figures jump with raised arms simultaneously when the movement is more varied.
+
+  [humorous_non_tech] Four people sprinting into the distance holding hands like they just got a group discount on freedom, and those wind turbines on the horizon are just standing there watching them go.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visual elements (four people, holding hands, wind turbines) and perfectly captures the requested warm, witty, non-technical tone with the 'group discount on freedom' observation.
+
+  [sarcastic] Nothing captures the thrill of human connection quite like sprinting directly away from the only witness to it.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visual action of running away from the camera while perfectly executing the target style by ironically framing this cliché stock footage trope as a profound moment of human connection.
+
+  [humorous_tech] Four silhouetted friends linked together mid-sprint, trying to reach the wind turbines before the garbage collector frees their memory.
+    accuracy=0.9  style_match=1.0  reasoning=The caption accurately describes the visual elements (silhouettes, sprinting, wind turbines) and uses a clever, specific tech analogy ('garbage collector') that fits the scene's motion perfectly without being generic.
+
+================================================================================
+TUNED SUMMARY
+================================================================================
+  formal               accuracy=0.99  style_match=1.00  n=15
+  humorous_tech        accuracy=0.86  style_match=0.93  n=15
+  humorous_non_tech    accuracy=0.94  style_match=1.00  n=15
+  sarcastic            accuracy=0.99  style_match=1.00  n=15
+
+  OVERALL              accuracy=0.94  style_match=0.98
+
+================================================================================
+[FRESH] TASK nature_desert  https://assets.mixkit.co/videos/4285/4285-720.mp4
+================================================================================
+Stage A description:
+{
+  "subjects": [
+    "a line of camels",
+    "sand dunes"
+  ],
+  "setting": "a desert landscape with rolling sand dunes under a cloudy sky",
+  "actions": [
+    "camels walking in a single file line from left to right",
+    "camels exiting the frame"
+  ],
+  "mood": "serene, vast",
+  "colors": [
+    "orange",
+    "tan",
+    "brown",
+    "grey",
+    "white"
+  ],
+  "notable_objects": [
+    "sand dunes",
+    "sparse desert vegetation",
+    "camel halters/ropes"
+  ],
+  "on_screen_text": "",
+  "temporal_flow": "A procession of camels walks across the foreground from left to right, eventually leaving the frame entirely to reveal the empty desert landscape.",
+  "scene_category": "nature",
+  "main_subject_attributes": [
+    "dark brown fur on leading camels",
+    "lighter beige/white fur on trailing camel",
+    "visible halters and ropes on some camels",
+    "single humps"
+  ],
+  "foreground_background": "Camels occupy the immediate foreground walking on sand, while large dunes and a cloudy sky form the background.",
+  "spatial_layout": "Camels are arranged in a horizontal line moving across the lower third of the frame; dunes dominate the upper two-thirds.",
+  "approximate_counts": [
+    "about four to five camels visible in sequence",
+    "one large dune complex in background"
+  ],
+  "visible_motion": [
+    "The camels walk steadily from left to right; the camera remains static."
+  ],
+  "uncertain_or_ambiguous": [
+    "exact total number of camels in the caravan (some are partially cropped)",
+    "specific desert location"
+  ],
+  "do_not_claim": [
+    "the camels are carrying riders or cargo",
+    "the time of day",
+    "the specific species of camel"
+  ]
+}
+
+  [formal] A line of camels, their halters visible, walks single-file across the orange sand from left to right, leaving behind a vast expanse of rolling dunes beneath a cloudy sky.
+    accuracy=1.0  style_match=1.0  reasoning=The caption is factually precise regarding the visible elements (camels, halters, direction, sand, sky) and adheres perfectly to the formal, objective, single-sentence style definition.
+
+  [humorous_non_tech] The camel at the back has clearly decided that keeping up with the group is optional, and honestly, same.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the lagging camel visible in the frames and perfectly captures the requested warm, relatable, non-technical humor with the 'honestly, same' punchline.
+
+  [humorous_tech] A single-file camel caravan processing left to right across the dunes, then leaving the frame empty -- basically a queue that drained successfully and left the system idle.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visual sequence of camels exiting the frame and uses a precise, accessible queue data structure analogy that perfectly maps to the linear processing and subsequent empty state.
+
+  [sarcastic] Five camels walking single file across an endless desert — because the one thing you don't want in a vast empty landscape is to accidentally spread out.
+    accuracy=0.9  style_match=1.0  reasoning=The caption accurately describes the visual of camels walking in a line and perfectly executes the target sarcastic style by mock-praising their formation as a strategic necessity in an empty landscape.
+
+================================================================================
+[FRESH] TASK urban_subway_train  https://assets.mixkit.co/videos/1606/1606-720.mp4
+================================================================================
+Stage A description:
+{
+  "subjects": [
+    "a white and red light rail train",
+    "a second white and red light rail train"
+  ],
+  "setting": "an urban railway area beneath a concrete overpass",
+  "actions": [
+    "a train approaches on the right track",
+    "the train passes under the bridge structure",
+    "a second train enters the frame from the left on an adjacent track",
+    "both trains move forward along the tracks"
+  ],
+  "mood": "industrial, transit",
+  "colors": [
+    "white",
+    "red",
+    "grey",
+    "black",
+    "pale green"
+  ],
+  "notable_objects": [
+    "concrete bridge pillars",
+    "chain-link fence",
+    "railway tracks",
+    "overhead electrical wires",
+    "green metal support pole",
+    "destination sign on train front",
+    "pantograph on train roof",
+    "graffiti on background walls",
+    "cars in background street"
+  ],
+  "on_screen_text": "17 Prefetures Est",
+  "temporal_flow": "A train travels from the background right towards the foreground left under a bridge, followed closely by a second train entering from the left side on a parallel track.",
+  "scene_category": "urban",
+  "main_subject_attributes": [
+    "white body with a horizontal red stripe",
+    "black window bands",
+    "rectangular shape",
+    "visible roof-mounted equipment",
+    "illuminated headlights on the leading train"
+  ],
+  "foreground_background": "Foreground contains railway tracks, a green metal pole, and the moving trains; background shows a street scene with cars, pedestrians, and buildings under the overpass.",
+  "spatial_layout": "The camera is positioned at an elevated angle looking down at the tracks; the first train occupies the right-center initially, moving left, while the second train appears on the far left later in the sequence.",
+  "approximate_counts": [
+    "two trains",
+    "several concrete pillars",
+    "multiple railway tracks",
+    "a few background vehicles"
+  ],
+  "visible_motion": [
+    "continuous forward movement of the trains along the tracks",
+    "slight camera shake or vibration"
+  ],
+  "uncertain_or_ambiguous": [
+    "exact text on the background blue building sign",
+    "specific identities of background pedestrians"
+  ],
+  "do_not_claim": [
+    "the specific city location",
+    "the speed of the trains",
+    "the destination of the second train"
+  ]
+}
+
+  [formal] Two white and red light rail trains pass beneath a concrete overpass on parallel tracks, their destination signs reading "17 Prefetures Est" as overhead electrical wires and graffiti-marked walls frame the urban corridor.
+    accuracy=0.5  style_match=0.9  reasoning=The caption accurately describes the scene and matches the formal style perfectly, but it incorrectly states there are 'two' trains when the frames show a single multi-car train passing beneath the overpass.
+
+  [humorous_non_tech] Two light rail trains meet under a concrete overpass like commuters who didn't coordinate outfits but both showed up in white and red anyway.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the two white and red trains passing under the overpass and perfectly captures the requested warm, relatable humor by comparing their matching colors to uncoordinated commuters.
+
+  [sarcastic] Because what this concrete underpass was really missing was two red-striped trains passing through it at the same time.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the two red-striped trains passing under the concrete structure and perfectly executes the dry, ironic sarcasm by mock-praising the mundane event as a necessary addition.
+
+  [humorous_tech] Two light rail trains converging on parallel tracks under the overpass like concurrent processes that picked the worst possible merge point.
+    accuracy=0.2  style_match=0.9  reasoning=The caption hallucinates a second train and a convergence event that do not exist in the frames (only one train is visible passing a stationary one), though the concurrent merge analogy is otherwise a perfect stylistic fit for the scene.
+
+================================================================================
+[FRESH] TASK animal_elephants  https://assets.mixkit.co/videos/11059/11059-720.mp4
+================================================================================
+Stage A description:
+{
+  "subjects": [
+    "a herd of Asian elephants",
+    "several adult elephants",
+    "multiple juvenile elephants"
+  ],
+  "setting": "grassy field with dense green forest background",
+  "actions": [
+    "walking slowly forward through tall grass",
+    "swinging trunks",
+    "flapping ears",
+    "one elephant holding vegetation in its trunk"
+  ],
+  "mood": "calm, natural",
+  "colors": [
+    "grey",
+    "brown",
+    "green",
+    "tan"
+  ],
+  "notable_objects": [
+    "tall grass",
+    "green bushes",
+    "trees",
+    "elephant trunks",
+    "large ears"
+  ],
+  "on_screen_text": "",
+  "temporal_flow": "The herd of elephants advances slowly from the background towards the camera, filling more of the frame as they approach.",
+  "scene_category": "nature",
+  "main_subject_attributes": [
+    "grey wrinkled skin",
+    "large fan-shaped ears",
+    "long trunks",
+    "varying sizes indicating adults and calves",
+    "some reddish-brown dust on backs"
+  ],
+  "foreground_background": "Foreground consists of waist-high green grass and bushes; background is a dense wall of green trees and foliage.",
+  "spatial_layout": "Elephants are clustered together in a horizontal line across the mid-ground, moving towards the viewer.",
+  "approximate_counts": [
+    "about seven to eight visible elephants",
+    "at least two juveniles"
+  ],
+  "visible_motion": [
+    "slow forward walking movement of the herd",
+    "trunk manipulation",
+    "ear movement"
+  ],
+  "uncertain_or_ambiguous": [
+    "exact number of elephants due to overlapping bodies",
+    "specific species confirmation (though likely Asian based on ear size)"
+  ],
+  "do_not_claim": [
+    "specific location name",
+    "reason for movement",
+    "family relationships between individuals"
+  ]
+}
+
+  [formal] A herd of grey elephants, adults and calves among them, advances slowly through waist-high grass toward the camera, trunks swinging and ears flapping as one carries a spray of vegetation in its grip.
+    accuracy=0.9  style_match=1.0  reasoning=The caption is a precise, objective, single-sentence description that matches the formal style perfectly, though 'waist-high' is a slight estimation given the varying sizes of the elephants.
+
+  [humorous_non_tech] The whole herd is plodding toward the camera like a committee that forgot to agree on a meeting agenda but showed up anyway, trunks swinging and ears flapping with zero urgency.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the herd's slow, forward movement and perfectly captures the requested warm, relatable humor through the 'committee' analogy without using any technical language.
+
+  [humorous_tech] The herd advances in a tightly packed horizontal row, which is basically a pre-merge conflict -- seven branches trying to occupy the same space in the grass before anyone runs `git rebase`.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visual of the tightly packed herd and uses a precise, illuminating git analogy (merge conflict/rebase) that perfectly maps to the spatial congestion shown, fitting the humorous tech style without being generic.
+
+  [sarcastic] What a thrill to witness eight elephants collectively agree that the best direction to walk is directly at the camera.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visible herd movement while perfectly executing the target style through dry, ironic mock-enthusiasm about a mundane animal behavior.
+
+================================================================================
+[FRESH] TASK people_market  https://assets.mixkit.co/videos/993/993-720.mp4
+================================================================================
+Stage A description:
+{
+  "subjects": [
+    "a person wearing a magenta dress",
+    "wooden crates of tomatoes"
+  ],
+  "setting": "outdoor market stall or produce stand",
+  "actions": [
+    "reaching into a crate",
+    "selecting tomatoes",
+    "holding a tomato"
+  ],
+  "mood": "calm, natural",
+  "colors": [
+    "magenta",
+    "red",
+    "yellow",
+    "green",
+    "light wood brown"
+  ],
+  "notable_objects": [
+    "wooden crates",
+    "red tomatoes",
+    "yellow tomatoes",
+    "green tomatoes",
+    "small wooden price sign"
+  ],
+  "on_screen_text": "",
+  "temporal_flow": "The person's hand reaches into a central crate of red tomatoes, selects one, lifts it briefly, and then places it back or adjusts their grip within the crate.",
+  "scene_category": "food",
+  "main_subject_attributes": [
+    "magenta sleeveless dress",
+    "black strap visible underneath",
+    "fair skin tone",
+    "arm extended forward"
+  ],
+  "foreground_background": "Foreground contains multiple rows of wooden crates filled with produce; background is out of focus with hints of a structure and another person.",
+  "spatial_layout": "Crates are arranged in diagonal rows receding from bottom-left to top-right; the person stands on the right side of the frame.",
+  "approximate_counts": [
+    "about six visible crates",
+    "dozens of tomatoes"
+  ],
+  "visible_motion": [
+    "Hand movement reaching down, grasping a tomato, and lifting it slightly."
+  ],
+  "uncertain_or_ambiguous": [
+    "identity of the person",
+    "specific location name",
+    "whether the tomato is purchased or just inspected"
+  ],
+  "do_not_claim": [
+    "the person is buying the tomatoes",
+    "the tomatoes are organic",
+    "the market is a farmers market"
+  ]
+}
+
+  [formal] A hand in a magenta sleeveless dress reaches into a wooden crate of red tomatoes at an outdoor produce stand, lifting a single tomato above crates of yellow and green varieties arranged in diagonal rows.
+    accuracy=0.8  style_match=1.0  reasoning=The caption perfectly matches the formal style but inaccurately describes the dress as 'sleeveless' (it has straps) and claims the tomato is lifted 'above' the crates, whereas the hand remains within the crate boundaries in all frames.
+
+  [humorous_non_tech] The magenta dress says "I'm just browsing," but the hand lingering in the tomato crate says "I've been here fifteen minutes and I'm not leaving without the perfect one."
+    accuracy=0.9  style_match=1.0  reasoning=The caption perfectly captures the relatable humor of indecisive grocery shopping with a warm, witty tone, though the specific 'fifteen minutes' duration is a creative exaggeration rather than a visible fact.
+
+  [humorous_tech] She picked up a tomato, evaluated it, and set it right back -- basically a read operation with no write permissions on the produce stand.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visual action of inspecting and returning a tomato, and the 'read-only' analogy is a precise, humorous technical parallel that fits the scene perfectly without being generic.
+
+  [sarcastic] Because the only way to truly evaluate a tomato is to lift it two inches and set it right back down.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the minimal action shown in the frames while perfectly executing the target style through dry, ironic mock-praise of a mundane gesture.
+
+================================================================================
+[FRESH] TASK sports_basketball  https://assets.mixkit.co/videos/2273/2273-720.mp4
+================================================================================
+Stage A description:
+{
+  "subjects": [
+    "a man playing basketball"
+  ],
+  "setting": "an outdoor basketball court surrounded by trees",
+  "actions": [
+    "dribbling a basketball",
+    "performing a crossover move",
+    "shooting the ball",
+    "walking on the court"
+  ],
+  "mood": "active, sunny",
+  "colors": [
+    "blue",
+    "green",
+    "black",
+    "brown",
+    "white"
+  ],
+  "notable_objects": [
+    "basketball hoop",
+    "basketball",
+    "chain-link fence",
+    "trees",
+    "concrete court surface"
+  ],
+  "on_screen_text": "",
+  "temporal_flow": "The man dribbles the ball with a wide stance, executes a crossover, shoots towards the hoop, and then walks forward on the court.",
+  "scene_category": "sports",
+  "main_subject_attributes": [
+    "wearing a dark blue sleeveless shirt",
+    "wearing black shorts",
+    "wearing dark socks with blue accents",
+    "wearing dark sneakers",
+    "wearing sunglasses"
+  ],
+  "foreground_background": "The man and the basketball court are in the foreground; a metal fence, trees, and rocks form the background.",
+  "spatial_layout": "The basketball hoop is centered in the background; the man moves from the center court area towards the hoop.",
+  "approximate_counts": [
+    "one person",
+    "one basketball",
+    "one hoop"
+  ],
+  "visible_motion": [
+    "rhythmic bouncing of the ball",
+    "lateral movement of the legs during dribbling",
+    "upward arm extension for the shot",
+    "forward walking motion"
+  ],
+  "uncertain_or_ambiguous": [
+    "whether the shot was successful (ball trajectory is cut off)",
+    "exact brand of clothing or shoes"
+  ],
+  "do_not_claim": [
+    "the score of the game",
+    "the location name",
+    "the identity of the person"
+  ]
+}
+
+  [formal] A man in a dark blue sleeveless shirt and sunglasses dribbles across a concrete court bordered by trees and a chain-link fence, executing a crossover before releasing a shot toward the centered hoop.
+    accuracy=0.9  style_match=1.0  reasoning=The caption is stylistically perfect and highly accurate, though it describes a shot release that occurs just after the final provided frame, making it a minor inference rather than a strictly visible fact.
+
+  [humorous_non_tech] The crossover was committed with total conviction, and the sunglasses suggest this was always going to be a highlight reel even if the shot has other plans.
+    accuracy=0.9  style_match=1.0  reasoning=The caption accurately describes the visible crossover and sunglasses while perfectly capturing the requested warm, witty, non-technical tone.
+
+  [sarcastic] Nothing screams "I'm taking this seriously" quite like a crossover on an outdoor court in sunglasses, where the ball's trajectory conveniently vanishes before we can verify anything.
+    accuracy=0.9  style_match=1.0  reasoning=The caption accurately describes the visible crossover and sunglasses while perfectly executing the dry, mock-praising sarcastic tone required by the style definition.
+
+  [humorous_tech] The crossover fakes left, redirects right, fires off the shot, and then the video cuts before the ball lands -- a textbook example of an unhandled async request where nobody waits for the response.
+    accuracy=0.2  style_match=0.9  reasoning=The caption hallucinates a crossover and a shot that never happen in the frames (the player only dribbles and walks away), though the async analogy is clever and fits the style perfectly.
+
+================================================================================
+[FRESH] TASK food_coffee  https://assets.mixkit.co/videos/4985/4985-720.mp4
+================================================================================
+Stage A description:
+{
+  "subjects": [
+    "roasted coffee beans",
+    "coffee grinder hopper",
+    "white ceramic bowl"
+  ],
+  "setting": "indoor close-up on a light wooden surface",
+  "actions": [
+    "coffee beans resting in a grinder",
+    "coffee beans being poured from a bowl",
+    "beans falling through the air"
+  ],
+  "mood": "calm, focused",
+  "colors": [
+    "dark brown",
+    "black",
+    "silver",
+    "beige",
+    "white"
+  ],
+  "notable_objects": [
+    "transparent plastic grinder hopper",
+    "metal grinding blade assembly",
+    "white pouring vessel"
+  ],
+  "on_screen_text": "MAX CA... 10 12",
+  "temporal_flow": "The scene begins with a static view of coffee beans inside a grinder, then transitions to show more beans being poured from a white bowl into the hopper from above.",
+  "scene_category": "food",
+  "main_subject_attributes": [
+    "dark roasted oval beans",
+    "clear cylindrical container",
+    "metallic central mechanism",
+    "smooth white ceramic bowl"
+  ],
+  "foreground_background": "The grinder hopper and falling beans are in the sharp foreground, while the wooden table and surrounding area are blurred in the background.",
+  "spatial_layout": "The grinder is centered in the lower frame; the pouring bowl enters from the top left corner in later frames.",
+  "approximate_counts": [
+    "dozens of coffee beans",
+    "one grinder",
+    "one bowl"
+  ],
+  "visible_motion": [
+    "beans tumbling downwards",
+    "camera focus shifting slightly"
+  ],
+  "uncertain_or_ambiguous": [
+    "exact brand of the grinder",
+    "full text on the hopper rim"
+  ],
+  "do_not_claim": [
+    "the grinder is turned on",
+    "the beans are being ground",
+    "a person is holding the bowl"
+  ]
+}
+
+  [formal] Dark roasted coffee beans tumble from a white ceramic bowl into the transparent hopper of a grinder, its metal blade assembly visible beneath the falling beans on a light wooden surface.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visible action and objects with precise, objective language that perfectly adheres to the formal style definition.
+
+  [humorous_non_tech] Pouring coffee beans into a grinder with the gentle focus of someone performing a sacred morning ritual that absolutely nobody is allowed to speak during.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visible action of pouring beans while perfectly capturing the requested warm, relatable humor about morning coffee rituals without using any technical jargon.
+
+  [humorous_tech] Pouring beans into the hopper without the grinder running -- essentially staging an entire commit but never calling execute, so the dark roasted payload just sits there waiting for someone to press the button.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visual action of loading beans into a stationary grinder and uses a precise, accessible version control analogy (staging without committing) that perfectly mirrors the state of potential energy shown in the frames.
+
+  [sarcastic] Ah yes, because the several dozen beans already sitting in the hopper were clearly nowhere near enough — thank goodness for that rescue pour from the white bowl.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visual action of adding beans to an already full grinder while perfectly executing the dry, mock-praising sarcastic tone defined in the instructions.
+
+================================================================================
+[FRESH] TASK weather_snow  https://assets.mixkit.co/videos/3317/3317-720.mp4
+================================================================================
+Stage A description:
+{
+  "subjects": [
+    "silver SUV",
+    "black SUV",
+    "black pickup truck"
+  ],
+  "setting": "snowy mountain road with evergreen forest and rock face",
+  "actions": [
+    "vehicles driving away around a curve",
+    "vehicles exiting the frame"
+  ],
+  "mood": "cold, overcast",
+  "colors": [
+    "white",
+    "dark green",
+    "grey",
+    "black"
+  ],
+  "notable_objects": [
+    "snow-covered rock face",
+    "evergreen trees",
+    "road sign",
+    "roof cargo boxes"
+  ],
+  "on_screen_text": "",
+  "temporal_flow": "Three vehicles sequentially drive away from the camera around a leftward curve and disappear from view, leaving the road empty.",
+  "scene_category": "nature",
+  "main_subject_attributes": [
+    "silver SUV with roof box",
+    "black SUV with roof box",
+    "black pickup truck"
+  ],
+  "foreground_background": "Snow banks in immediate foreground, curved road in mid-ground, forest and rock face in background",
+  "spatial_layout": "Road curves from bottom right to center left; rock face on right, forest on left",
+  "approximate_counts": [
+    "three vehicles"
+  ],
+  "visible_motion": [
+    "Vehicles moving away from camera along the road curve"
+  ],
+  "uncertain_or_ambiguous": [
+    "specific vehicle makes and models",
+    "text on license plates and road sign"
+  ],
+  "do_not_claim": [
+    "weather conditions beyond visible snow",
+    "driver identities",
+    "destination of vehicles"
+  ]
+}
+
+  [formal] Three SUVs and a pickup truck fitted with roof cargo boxes round a leftward curve on a snowy mountain road, passing between snow-covered rock face and evergreen forest before disappearing from view.
+    accuracy=0.8  style_match=1.0  reasoning=The caption perfectly matches the formal style but inaccurately states that all four vehicles are fitted with roof cargo boxes, whereas only the first three clearly display them.
+
+  [sarcastic] Three SUVs and a pickup rounding a snowy mountain curve — because nothing says you've escaped to the wilderness like three roof cargo boxes and a line of traffic.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately identifies the specific vehicles and roof boxes visible in the frames while perfectly executing the target style through dry, ironic commentary on the contradiction between 'wilderness escape' and suburban traffic.
+
+  [humorous_non_tech] Three SUVs and a pickup roll off into the snowy forest like a convoy of people who all picked the exact same weekend to prove something to themselves.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately identifies the specific vehicle types (three SUVs and a pickup) visible in the frames and perfectly captures the requested warm, relatable humor by playfully interpreting their collective journey as a shared mission to 'prove something.'
+
+  [humorous_tech] Three SUVs with roof cargo boxes rounding a snowy curve and disappearing one by one — like processes exiting the queue until the road sits idle at zero load.
+    accuracy=0.8  style_match=1.0  reasoning=The caption incorrectly identifies the third vehicle as an SUV (it is a pickup truck), but the tech analogy regarding process queues and system load is precise, accessible, and perfectly maps to the visual sequence of vehicles clearing the frame.
+
+================================================================================
+[FRESH] TASK tech_developer  https://assets.mixkit.co/videos/1749/1749-720.mp4
+================================================================================
+Stage A description:
+{
+  "subjects": [
+    "a pair of hands typing on a laptop",
+    "a white coffee mug"
+  ],
+  "setting": "an indoor desk workspace near a window",
+  "actions": [
+    "typing on a laptop keyboard",
+    "fingers pressing keys"
+  ],
+  "mood": "focused, productive",
+  "colors": [
+    "silver",
+    "black",
+    "white",
+    "dark brown",
+    "amber"
+  ],
+  "notable_objects": [
+    "silver laptop",
+    "white ceramic mug with dark liquid",
+    "amber glass bottle",
+    "window with blinds",
+    "gold ring on left hand"
+  ],
+  "on_screen_text": "lines of code with syntax highlighting (red, green, white text on black background)",
+  "temporal_flow": "The scene remains static with the hands continuously typing on the keyboard throughout the clip.",
+  "scene_category": "technology",
+  "main_subject_attributes": [
+    "light skin tone",
+    "gold band on left ring finger",
+    "silver laptop chassis",
+    "black keys"
+  ],
+  "foreground_background": "Foreground features the hands and laptop keyboard; background includes the mug, bottle, and window.",
+  "spatial_layout": "Laptop occupies the right and center; mug and bottle are positioned on the left side of the frame.",
+  "approximate_counts": [
+    "one laptop",
+    "one mug",
+    "one bottle",
+    "two hands"
+  ],
+  "visible_motion": [
+    "Rapid finger movement across the keyboard keys."
+  ],
+  "uncertain_or_ambiguous": [
+    "specific programming language on screen",
+    "exact content of the code"
+  ],
+  "do_not_claim": [
+    "the person is a professional developer",
+    "the liquid is coffee",
+    "the brand of the laptop"
+  ]
+}
+
+  [formal] Hands bearing a gold band on the left ring finger type rapidly across the black keys of a silver laptop, its screen displaying lines of color-coded code beside a white ceramic mug and an amber glass bottle near a window with blinds.
+    accuracy=0.9  style_match=1.0  reasoning=The caption is stylistically perfect and highly accurate, though it slightly misidentifies the laptop keys as black (they are black chiclet keys on a silver body, but the base is silver) and assumes the typing speed is 'rapid' which is subjective, but otherwise grounded.
+
+  [sarcastic] Truly remarkable how typing furiously into a black void of colored text qualifies as a productive afternoon.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visual of coding on a dark screen and perfectly executes the target style by using mock-praise ('truly remarkable') to ironically undercut the mundane nature of the activity.
+
+  [humorous_non_tech] The gold ring on the left hand suggests this person made a lifelong commitment, and that commitment is clearly to whatever's filling that mug.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately identifies the visible ring and coffee mug while delivering a witty, relatable observation about work-life priorities that perfectly fits the humorous_non_tech style without using any technical jargon.
+
+  [humorous_tech] The dark liquid in the white mug is like a local variable — nobody knows its exact value, but the code keeps running as long as it's in scope.
+    accuracy=1.0  style_match=1.0  reasoning=The caption accurately describes the visible elements (dark liquid, white mug, coding context) and uses a precise, witty programming analogy (local variable scope) that fits the scene perfectly without being generic.
+
+================================================================================
+FRESH SUMMARY
+================================================================================
+  formal               accuracy=0.85  style_match=0.99  n=8
+  humorous_non_tech    accuracy=0.97  style_match=1.00  n=8
+  humorous_tech        accuracy=0.78  style_match=0.97  n=8
+  sarcastic            accuracy=0.97  style_match=1.00  n=8
+
+  OVERALL              accuracy=0.89  style_match=0.99
+
+================================================================================
+TUNED vs FRESH
+================================================================================
+                         accuracy   style_match
+  TUNED                      0.94          0.98
+  FRESH                      0.89          0.99
+  delta (fresh-tuned)       -0.05         +0.01
+
+  FRESH holds steady with TUNED -- no overfit signal detected.

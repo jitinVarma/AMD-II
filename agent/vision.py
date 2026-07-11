@@ -29,6 +29,7 @@ except ImportError as _exc:  # pragma: no cover - exercised only when the option
 DESCRIPTION_SCHEMA_FIELDS = [
     "subjects", "setting", "actions", "mood", "colors",
     "notable_objects", "on_screen_text", "temporal_flow",
+    "uncertain_or_ambiguous", "do_not_claim",
 ]
 
 _SYSTEM_PROMPT = """You are a meticulous visual analyst. You will be shown several \
@@ -40,6 +41,9 @@ Strict rules:
 - Describe ONLY what you can actually see in the frames. Never invent people, \
 objects, text, locations, or actions that are not visible.
 - If you are not confident about something, OMIT it rather than guessing.
+- Be thorough about what IS visible, but do not over-specify. Prefer \
+conservative phrases like "vehicles" over exact vehicle types if the frames \
+do not make every type clear.
 - Do not speculate about context, backstory, brand names, or identities unless \
 they are clearly and unambiguously visible.
 - The frames are sampled across the WHOLE clip; use the timestamp labels to reason \
@@ -57,7 +61,9 @@ applicable -- never fabricate to fill a field):
   "colors": ["dominant visible colors"],
   "notable_objects": ["distinct visible objects/props, if any"],
   "on_screen_text": "any literal text visible in-frame, exactly as shown, or empty string",
-  "temporal_flow": "one short sentence on how the scene changes from first frame to last"
+  "temporal_flow": "one short sentence on how the scene changes from first frame to last",
+  "uncertain_or_ambiguous": ["visible details that are uncertain and should be treated cautiously"],
+  "do_not_claim": ["facts that should NOT be claimed because they are not visible or are uncertain"]
 }"""
 
 
@@ -80,6 +86,7 @@ def _empty_description() -> dict:
     return {
         "subjects": [], "setting": "", "actions": [], "mood": "",
         "colors": [], "notable_objects": [], "on_screen_text": "", "temporal_flow": "",
+        "uncertain_or_ambiguous": [], "do_not_claim": [],
     }
 
 

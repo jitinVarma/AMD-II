@@ -3,10 +3,11 @@
    Caption keys match agent/styling.py: ALL_STYLES =
    ["formal","sarcastic","humorous_tech","humorous_non_tech"].
 
-   Scope: URL-sourced clips only for this pass -- the FileDropzone is
-   visually present (preserves the composer layout) but inert; real file
-   upload isn't wired to the backend yet, and the UI says so rather than
-   pretending it works.
+   Clips can be queued either by pasting a URL or by dropping/browsing a
+   local file: an uploaded file is POSTed to /api/upload, which stores it
+   and hands back a URL that download_video() (agent/download.py) fetches
+   back over plain HTTP exactly like a pasted clip -- so both paths feed
+   the identical /api/generate contract with zero divergence downstream.
 */
 
 const STYLE_META = {
@@ -31,11 +32,14 @@ const API_BASE = (window.DEEPSYNC_API_BASE || "").replace(/\/$/, "");
 const STAGE_INDEX = { queued: 0, stage_a: 0, stage_b: 1, done: 2 };
 
 const state = {
-  clips: [],                 // queued, pre-submission: { id, url, name }
+  clips: [],                 // queued, pre-submission: { id, url, name, source: "url"|"upload", status: "ready"|"uploading" }
   composerMode: "queueing",  // "queueing" | "processing" | "error"
   errorMessage: null,
+  uploadError: null,         // transient inline note for a failed file upload (doesn't touch composerMode)
   jobResult: null,           // populated from the final job poll once status === "done"
 };
+
+const ACCEPTED_UPLOAD_TYPES = new Set(["video/mp4", "video/quicktime", "video/webm", "video/x-matroska"]);
 
 let nextClipId = 1;
 let pollHandle = null;
@@ -67,7 +71,7 @@ function escapeHtml(str) {
 
 function addClip(url) {
   if (state.clips.length >= MAX_CLIPS) return;
-  state.clips.push({ id: nextClipId++, url, name: filenameFromUrl(url) });
+  state.clips.push({ id: nextClipId++, url, name: filenameFromUrl(url), source: "url", status: "ready" });
   renderComposerCard();
 }
 
@@ -204,7 +208,7 @@ function renderComposerCard() {
 
 function renderQueueingCard() {
   const mount = document.getElementById("composer-card-mount");
-  const canGenerate = state.clips.length > 0;
+  const canGenerate = state.clips.length > 0 && state.clips.every((c) => c.status !== "uploading");
 
   mount.innerHTML = `
     <div class="composer-card" data-reveal style="--stagger-index:1">
@@ -216,11 +220,13 @@ function renderQueueingCard() {
         <button class="btn btn-secondary" id="url-add-btn">Add URL</button>
       </div>
 
-      <div class="dropzone is-disabled" id="dropzone" aria-disabled="true">
+      <div class="dropzone" id="dropzone">
         ${ICONS.upload}
-        <div><strong>File upload</strong> — coming soon</div>
-        <small>For now, paste a URL above · MP4 · up to ${MAX_CLIPS} clips per batch</small>
+        <div><strong>Drop a video</strong> or click to browse</div>
+        <small>MP4 · MOV · WEBM · MKV — up to ${MAX_CLIPS} clips per batch</small>
+        <input type="file" id="file-input" accept="video/mp4,video/quicktime,video/webm,video/x-matroska" multiple>
       </div>
+      ${state.uploadError ? `<div class="upload-error">${escapeHtml(state.uploadError)}</div>` : ""}
 
       <div class="queue-label">Queued (${state.clips.length}/${MAX_CLIPS})</div>
       ${
@@ -241,14 +247,16 @@ function renderQueueingCard() {
 }
 
 function renderUploadRow(clip) {
+  const isUploading = clip.status === "uploading";
+  const sourceLabel = isUploading ? "Uploading…" : clip.source === "upload" ? "Uploaded file" : "From URL";
   return `
     <div class="upload-row" data-id="${clip.id}">
       <div class="upload-row__thumb"></div>
       <div class="upload-row__meta">
         <div class="upload-row__name mono">${escapeHtml(clip.name)}</div>
-        <div class="upload-row__source">From URL</div>
+        <div class="upload-row__source">${sourceLabel}</div>
       </div>
-      <button class="upload-row__remove" data-remove="${clip.id}" aria-label="Remove">×</button>
+      ${isUploading ? "" : `<button class="upload-row__remove" data-remove="${clip.id}" aria-label="Remove">×</button>`}
     </div>
   `;
 }
@@ -257,6 +265,8 @@ function wireComposerEvents() {
   const urlInput = document.getElementById("url-input");
   const urlAddBtn = document.getElementById("url-add-btn");
   const generateBtn = document.getElementById("generate-btn");
+  const dropzone = document.getElementById("dropzone");
+  const fileInput = document.getElementById("file-input");
 
   function submitUrl() {
     const val = urlInput.value.trim();
@@ -279,6 +289,81 @@ function wireComposerEvents() {
       startGeneration();
     });
   }
+
+  dropzone.addEventListener("click", (e) => {
+    if (e.target === fileInput) return;
+    fileInput.click();
+  });
+  fileInput.addEventListener("change", () => {
+    handleFiles(fileInput.files);
+    fileInput.value = ""; // allow re-selecting the same file later
+  });
+
+  ["dragenter", "dragover"].forEach((evt) => {
+    dropzone.addEventListener(evt, (e) => {
+      e.preventDefault();
+      dropzone.classList.add("is-dragover");
+    });
+  });
+  ["dragleave", "drop"].forEach((evt) => {
+    dropzone.addEventListener(evt, (e) => {
+      e.preventDefault();
+      dropzone.classList.remove("is-dragover");
+    });
+  });
+  dropzone.addEventListener("drop", (e) => {
+    if (e.dataTransfer && e.dataTransfer.files) handleFiles(e.dataTransfer.files);
+  });
+}
+
+/* ---------------------------------------------------------------- file upload */
+
+function handleFiles(fileList) {
+  state.uploadError = null;
+  for (const file of Array.from(fileList)) {
+    if (state.clips.length >= MAX_CLIPS) {
+      state.uploadError = `Batch limit reached (${MAX_CLIPS} clips) — remove a clip before adding another.`;
+      renderComposerCard();
+      break;
+    }
+    if (file.type && !ACCEPTED_UPLOAD_TYPES.has(file.type)) {
+      state.uploadError = `"${file.name}" is not a supported video type (expected MP4, MOV, WEBM, or MKV).`;
+      renderComposerCard();
+      continue;
+    }
+    queueUpload(file);
+  }
+}
+
+function queueUpload(file) {
+  const id = nextClipId++;
+  state.clips.push({ id, url: null, name: file.name, source: "upload", status: "uploading" });
+  renderComposerCard();
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  fetch(`${API_BASE}/api/upload`, { method: "POST", body: formData })
+    .then(async (resp) => {
+      if (!resp.ok) {
+        const body = await resp.json().catch(() => ({}));
+        throw new Error(body.detail || `upload failed (${resp.status})`);
+      }
+      return resp.json();
+    })
+    .then((data) => {
+      const clip = state.clips.find((c) => c.id === id);
+      if (!clip) return; // removed from the queue while the upload was in flight
+      clip.url = data.video_url;
+      clip.name = data.name || clip.name;
+      clip.status = "ready";
+      renderComposerCard();
+    })
+    .catch((err) => {
+      state.clips = state.clips.filter((c) => c.id !== id);
+      state.uploadError = `Could not upload "${file.name}": ${err.message}`;
+      renderComposerCard();
+    });
 }
 
 /* ---------------------------------------------------------------- error card */
@@ -448,14 +533,20 @@ function renderResultBlock(clip) {
     <div class="result-block">
       <div class="video-card">
         <div class="video-card__thumb">
-          ${ICONS.play}
+          ${
+            clip.video_url
+              ? `<video class="video-card__player" src="${escapeHtml(clip.video_url)}" controls preload="metadata" playsinline></video>`
+              : ICONS.play
+          }
           <span class="video-card__duration mono">${fmtDuration(clip.duration)}</span>
         </div>
-        <div>
-          <div class="video-card__name mono">${escapeHtml(clip.name)}</div>
-          <div class="video-card__task-id mono">task_id: ${clip.task_id}</div>
+        <div class="video-card__meta">
+          <div>
+            <div class="video-card__name mono">${escapeHtml(clip.name)}</div>
+            <div class="video-card__task-id mono">task_id: ${clip.task_id}</div>
+          </div>
+          ${clip.used_fallback ? `<span class="fallback-badge mono">Fallback used</span>` : ""}
         </div>
-        ${clip.used_fallback ? `<span class="fallback-badge mono">Fallback used</span>` : ""}
       </div>
       <div class="caption-grid">
         ${STYLE_ORDER.map((key, i) => renderCaptionCard(key, i, clip.captions)).join("")}

@@ -97,7 +97,10 @@ def process_task(
         _report("stage_b")
         t_stage_b_start = time.monotonic()
         logger.info("[%s] stage B: generating %d styles", task_id, len(styles))
-        captions_raw = get_stage_b_captions(client, description, styles, config, task_id=task_id, deadline=deadline)
+        captions_raw = get_stage_b_captions(
+            client, description, styles, config, task_id=task_id, deadline=deadline,
+            timestamped_frames=timestamped_frames,
+        )
         t_stage_b = time.monotonic() - t_stage_b_start
 
         captions = validate_and_fix(captions_raw, styles, description, task_id=task_id)

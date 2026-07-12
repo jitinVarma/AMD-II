@@ -105,6 +105,7 @@ e.g. for Docker Hub: `docker tag video-captioning-agent:submission yourusername/
 | `MAX_WORKERS` | `4` | concurrent clip workers |
 | `TOTAL_BUDGET_SECONDS` | `540` | whole-batch soft deadline (contract cap is 600s) |
 | `MAX_LONG_SIDE` | `768` | frame downscale target (px, long side) |
+| `JUDGE_MAX_FRAMES` | `6` | frames (evenly subsampled from the clip) shown to the Stage B judge, so it verifies candidates against actual pixels, not just Stage A's text description |
 | `INPUT_PATH` / `OUTPUT_PATH` | `/input/tasks.json` / `/output/results.json` | I/O paths |
 | `GOOGLE_API_KEY` | *(unset -- optional)* | enables an optional last-resort Stage-A fallback via Gemini, only invoked if every Fireworks vision attempt fails for a clip. Fully optional: the container works with no Google key at all. |
 | `GEMINI_MODEL` | `gemini-3-flash-preview` | model used by the optional Gemini fallback. **Note:** this model has hit free-tier quota limits in testing -- use a paid Google API key if you want this fallback to be reliable under real load. |

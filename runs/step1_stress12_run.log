@@ -1,0 +1,111 @@
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/site-packages/pydantic/_internal/_generate_schema.py:663: ArbitraryTypeWarning: <built-in function any> is not a Python type (it may be an instance of an object), Pydantic will allow any object with no validation since we cannot even enforce that the input is an instance of the given type. To get rid of this error wrap the type with `pydantic.SkipValidation`.
+  warnings.warn(
+2026-07-12 23:35:39,464 INFO agent.main: loaded 12 tasks; vision_model=accounts/fireworks/models/qwen3p7-plus text_model=accounts/fireworks/models/glm-5p2 keys=1 workers=1 budget=280s
+2026-07-12 23:35:39,468 INFO agent.main: [nature_waterfall] downloading video
+2026-07-12 23:35:42,604 INFO agent.main: [nature_waterfall] downloaded 44754532 bytes in 3.1s
+2026-07-12 23:35:42,604 INFO agent.main: [nature_waterfall] extracting frames
+2026-07-12 23:35:44,581 INFO agent.frames: only 5 frames after normal placement (duration=15.0s, target=6) -- filling to the hard floor via largest-gap insertion
+2026-07-12 23:35:47,343 INFO agent.main: [nature_waterfall] extracted 6 frames in 4.7s
+2026-07-12 23:35:47,345 INFO agent.main: [nature_waterfall] stage A: describing scene
+2026-07-12 23:35:49,011 INFO agent.main: [nature_waterfall] stage B: generating 4 styles
+2026-07-12 23:35:49,011 INFO agent.styling: [nature_waterfall] stage B degradation tier=full_quality (3% of budget elapsed)
+2026-07-12 23:35:54,773 INFO agent.main: [nature_waterfall] done in 15.3s (download=3.1s frames=4.7s stageA=1.7s stageB=5.8s)
+2026-07-12 23:35:54,776 INFO agent.main: [urban_city_night] downloading video
+2026-07-12 23:35:57,901 INFO agent.main: [urban_city_night] downloaded 42568455 bytes in 3.1s
+2026-07-12 23:35:57,901 INFO agent.main: [urban_city_night] extracting frames
+2026-07-12 23:36:00,220 INFO agent.frames: only 5 frames after normal placement (duration=12.3s, target=6) -- filling to the hard floor via largest-gap insertion
+2026-07-12 23:36:02,538 INFO agent.main: [urban_city_night] extracted 6 frames in 4.6s
+2026-07-12 23:36:02,540 INFO agent.main: [urban_city_night] stage A: describing scene
+2026-07-12 23:36:04,569 INFO agent.main: [urban_city_night] stage B: generating 4 styles
+2026-07-12 23:36:04,569 INFO agent.styling: [urban_city_night] stage B degradation tier=full_quality (9% of budget elapsed)
+2026-07-12 23:36:10,283 INFO agent.main: [urban_city_night] done in 15.5s (download=3.1s frames=4.6s stageA=2.0s stageB=5.7s)
+2026-07-12 23:36:10,284 INFO agent.main: [animal_lions] downloading video
+2026-07-12 23:36:10,473 INFO agent.main: [animal_lions] downloaded 4128357 bytes in 0.2s
+2026-07-12 23:36:10,473 INFO agent.main: [animal_lions] extracting frames
+2026-07-12 23:36:10,935 INFO agent.frames: only 5 frames after normal placement (duration=11.0s, target=6) -- filling to the hard floor via largest-gap insertion
+2026-07-12 23:36:11,813 INFO agent.main: [animal_lions] extracted 6 frames in 1.3s
+2026-07-12 23:36:11,813 INFO agent.main: [animal_lions] stage A: describing scene
+2026-07-12 23:36:13,671 INFO agent.main: [animal_lions] stage B: generating 4 styles
+2026-07-12 23:36:13,671 INFO agent.styling: [animal_lions] stage B degradation tier=full_quality (12% of budget elapsed)
+2026-07-12 23:36:17,843 INFO agent.main: [animal_lions] done in 7.6s (download=0.2s frames=1.3s stageA=1.9s stageB=4.2s)
+2026-07-12 23:36:17,844 INFO agent.main: [people_walking] downloading video
+2026-07-12 23:36:19,277 INFO agent.main: [people_walking] downloaded 24011211 bytes in 1.4s
+2026-07-12 23:36:19,277 INFO agent.main: [people_walking] extracting frames
+2026-07-12 23:36:20,290 INFO agent.frames: only 3 frames after normal placement (duration=7.3s, target=6) -- filling to the hard floor via largest-gap insertion
+2026-07-12 23:36:23,088 INFO agent.main: [people_walking] extracted 6 frames in 3.8s
+2026-07-12 23:36:23,089 INFO agent.main: [people_walking] stage A: describing scene
+2026-07-12 23:36:24,858 INFO agent.main: [people_walking] stage B: generating 4 styles
+2026-07-12 23:36:24,858 INFO agent.styling: [people_walking] stage B degradation tier=full_quality (16% of budget elapsed)
+2026-07-12 23:36:28,500 WARNING agent.styling: [people_walking] all sarcastic candidates vetoed/unusable, regenerating once
+2026-07-12 23:36:31,056 ERROR agent.styling: [people_walking] sarcastic still unusable after regeneration, using template fallback
+2026-07-12 23:36:31,056 INFO agent.main: [people_walking] done in 13.2s (download=1.4s frames=3.8s stageA=1.8s stageB=6.2s)
+2026-07-12 23:36:31,057 INFO agent.main: [weather_rain] downloading video
+2026-07-12 23:36:31,523 INFO agent.main: [weather_rain] downloaded 9430669 bytes in 0.5s
+2026-07-12 23:36:31,524 INFO agent.main: [weather_rain] extracting frames
+2026-07-12 23:36:33,150 INFO agent.main: [weather_rain] extracted 6 frames in 1.6s
+2026-07-12 23:36:33,151 INFO agent.main: [weather_rain] stage A: describing scene
+2026-07-12 23:36:34,935 INFO agent.main: [weather_rain] stage B: generating 4 styles
+2026-07-12 23:36:34,935 INFO agent.styling: [weather_rain] stage B degradation tier=full_quality (20% of budget elapsed)
+2026-07-12 23:36:39,782 INFO agent.main: [weather_rain] done in 8.7s (download=0.5s frames=1.6s stageA=1.8s stageB=4.8s)
+2026-07-12 23:36:39,782 INFO agent.main: [sports_soccer] downloading video
+2026-07-12 23:36:41,083 INFO agent.main: [sports_soccer] downloaded 21929672 bytes in 1.3s
+2026-07-12 23:36:41,083 INFO agent.main: [sports_soccer] extracting frames
+2026-07-12 23:36:42,128 INFO agent.frames: only 3 frames after normal placement (duration=5.7s, target=6) -- filling to the hard floor via largest-gap insertion
+2026-07-12 23:36:45,650 INFO agent.main: [sports_soccer] extracted 6 frames in 4.6s
+2026-07-12 23:36:45,651 INFO agent.main: [sports_soccer] stage A: describing scene
+2026-07-12 23:36:47,027 INFO agent.main: [sports_soccer] stage B: generating 4 styles
+2026-07-12 23:36:47,027 INFO agent.styling: [sports_soccer] stage B degradation tier=full_quality (24% of budget elapsed)
+2026-07-12 23:36:56,631 INFO agent.main: [sports_soccer] done in 16.8s (download=1.3s frames=4.6s stageA=1.4s stageB=9.6s)
+2026-07-12 23:36:56,632 INFO agent.main: [food_chef] downloading video
+2026-07-12 23:36:59,594 INFO agent.main: [food_chef] downloaded 42613733 bytes in 3.0s
+2026-07-12 23:36:59,594 INFO agent.main: [food_chef] extracting frames
+2026-07-12 23:37:00,891 INFO agent.frames: only 5 frames after normal placement (duration=12.0s, target=6) -- filling to the hard floor via largest-gap insertion
+2026-07-12 23:37:02,585 INFO agent.main: [food_chef] extracted 6 frames in 3.0s
+2026-07-12 23:37:02,587 INFO agent.main: [food_chef] stage A: describing scene
+2026-07-12 23:37:03,831 INFO agent.main: [food_chef] stage B: generating 4 styles
+2026-07-12 23:37:03,831 INFO agent.styling: [food_chef] stage B degradation tier=full_quality (30% of budget elapsed)
+2026-07-12 23:37:09,138 INFO agent.main: [food_chef] done in 12.5s (download=3.0s frames=3.0s stageA=1.2s stageB=5.3s)
+2026-07-12 23:37:09,139 INFO agent.main: [tech_vr] downloading video
+2026-07-12 23:37:14,124 INFO agent.main: [tech_vr] downloaded 67498249 bytes in 5.0s
+2026-07-12 23:37:14,124 INFO agent.main: [tech_vr] extracting frames
+2026-07-12 23:37:19,819 INFO agent.main: [tech_vr] extracted 6 frames in 5.7s
+2026-07-12 23:37:19,822 INFO agent.main: [tech_vr] stage A: describing scene
+2026-07-12 23:37:21,530 INFO agent.main: [tech_vr] stage B: generating 4 styles
+2026-07-12 23:37:21,530 INFO agent.styling: [tech_vr] stage B degradation tier=full_quality (36% of budget elapsed)
+2026-07-12 23:37:25,865 INFO agent.main: [tech_vr] done in 16.7s (download=5.0s frames=5.7s stageA=1.7s stageB=4.3s)
+2026-07-12 23:37:25,868 INFO agent.main: [nature_ocean_waves] downloading video
+2026-07-12 23:37:26,283 INFO agent.main: [nature_ocean_waves] downloaded 11093628 bytes in 0.4s
+2026-07-12 23:37:26,283 INFO agent.main: [nature_ocean_waves] extracting frames
+2026-07-12 23:37:28,341 INFO agent.main: [nature_ocean_waves] extracted 6 frames in 2.1s
+2026-07-12 23:37:28,343 INFO agent.main: [nature_ocean_waves] stage A: describing scene
+2026-07-12 23:37:30,050 INFO agent.main: [nature_ocean_waves] stage B: generating 4 styles
+2026-07-12 23:37:30,050 INFO agent.styling: [nature_ocean_waves] stage B degradation tier=full_quality (39% of budget elapsed)
+2026-07-12 23:37:35,500 INFO agent.main: [nature_ocean_waves] done in 9.6s (download=0.4s frames=2.1s stageA=1.7s stageB=5.5s)
+2026-07-12 23:37:35,501 INFO agent.main: [animal_birds] downloading video
+2026-07-12 23:37:36,557 INFO agent.main: [animal_birds] downloaded 19380474 bytes in 1.1s
+2026-07-12 23:37:36,557 INFO agent.main: [animal_birds] extracting frames
+2026-07-12 23:37:38,559 INFO agent.main: [animal_birds] extracted 6 frames in 2.0s
+2026-07-12 23:37:38,560 INFO agent.main: [animal_birds] stage A: describing scene
+2026-07-12 23:37:57,364 INFO agent.main: [animal_birds] stage B: generating 4 styles
+2026-07-12 23:37:57,365 INFO agent.styling: [animal_birds] stage B degradation tier=full_quality (49% of budget elapsed)
+2026-07-12 23:38:01,372 INFO agent.main: [animal_birds] done in 25.9s (download=1.1s frames=2.0s stageA=18.8s stageB=4.0s)
+2026-07-12 23:38:01,373 INFO agent.main: [tech_animation] downloading video
+2026-07-12 23:38:02,303 INFO agent.main: [tech_animation] downloaded 17792324 bytes in 0.9s
+2026-07-12 23:38:02,303 INFO agent.main: [tech_animation] extracting frames
+2026-07-12 23:38:03,331 INFO agent.frames: only 3 frames after normal placement (duration=5.0s, target=6) -- filling to the hard floor via largest-gap insertion
+2026-07-12 23:38:06,278 INFO agent.main: [tech_animation] extracted 6 frames in 4.0s
+2026-07-12 23:38:06,278 INFO agent.main: [tech_animation] stage A: describing scene
+2026-07-12 23:39:06,284 WARNING agent.fireworks: fireworks request error key=fw_F...BN3R attempt=0 err=ReadTimeout: HTTPSConnectionPool(host='api.fireworks.ai', port=443): Read timed out. (read timeout=60)
+2026-07-12 23:39:10,220 INFO agent.main: [tech_animation] stage B: generating 4 styles
+2026-07-12 23:39:10,220 INFO agent.styling: [tech_animation] stage B degradation tier=skip_judge (75% of budget elapsed)
+2026-07-12 23:39:12,280 INFO agent.main: [tech_animation] done in 70.9s (download=0.9s frames=4.0s stageA=63.9s stageB=2.1s)
+2026-07-12 23:39:12,281 INFO agent.main: [sports_running] downloading video
+2026-07-12 23:39:12,491 INFO agent.main: [sports_running] downloaded 2842052 bytes in 0.2s
+2026-07-12 23:39:12,491 INFO agent.main: [sports_running] extracting frames
+2026-07-12 23:39:12,803 INFO agent.frames: only 3 frames after normal placement (duration=6.9s, target=6) -- filling to the hard floor via largest-gap insertion
+2026-07-12 23:39:13,622 INFO agent.main: [sports_running] extracted 6 frames in 1.1s
+2026-07-12 23:39:13,622 INFO agent.main: [sports_running] stage A: describing scene
+2026-07-12 23:39:15,080 INFO agent.main: [sports_running] stage B: generating 4 styles
+2026-07-12 23:39:15,080 INFO agent.styling: [sports_running] stage B degradation tier=skip_judge (77% of budget elapsed)
+2026-07-12 23:39:16,696 INFO agent.main: [sports_running] done in 4.4s (download=0.2s frames=1.1s stageA=1.5s stageB=1.6s)
+2026-07-12 23:39:16,703 INFO agent.main: wrote 12 results to output/results_step1_verify.json in 217.2s total

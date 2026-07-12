@@ -82,10 +82,7 @@ def main() -> None:
             print("Stage A description:")
             print(json.dumps(description, indent=2, ensure_ascii=False))
 
-            captions = get_stage_b_captions(
-                client, description, styles, cfg, task_id=task_id,
-                timestamped_frames=timestamped_frames,
-            )
+            captions = get_stage_b_captions(client, description, styles, cfg, task_id=task_id)
             print("Captions:")
             for style, caption in captions.items():
                 print(f"  {style:20s} {caption}")

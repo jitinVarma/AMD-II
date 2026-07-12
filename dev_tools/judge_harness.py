@@ -141,10 +141,7 @@ def _run_set(tasks: list[dict], client: FireworksClient, config: Config, label: 
             print("Stage A description:")
             print(json.dumps(description, indent=2, ensure_ascii=False))
 
-        captions = get_stage_b_captions(
-            client, description, styles, config, task_id=task_id,
-            timestamped_frames=timestamped_frames,
-        )
+        captions = get_stage_b_captions(client, description, styles, config, task_id=task_id)
 
         for style, caption in captions.items():
             time.sleep(call_delay)

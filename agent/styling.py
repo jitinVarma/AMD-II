@@ -2,12 +2,7 @@
 style via PER-STYLE ISOLATED generation (no cross-style context bleed --
 each generation prompt contains only that style's own card) followed by an
 LLM judge pass that vetoes ungrounded/cover-test-failing candidates and
-scores survivors. The judge is FRAME-GROUNDED: it sees the actual clip
-frames (a subsampled subset, agent/config.py:judge_max_frames) alongside
-the candidates, not just Stage A's text description, so it can catch a
-candidate that matches the description but contradicts what's actually on
-screen -- and catch Stage-A's own omissions/errors, which nothing upstream
-could otherwise correct. A time-budget degradation ladder (agent/config.py:
+scores survivors. A time-budget degradation ladder (agent/config.py:
 total_budget_seconds) trades candidate count / judge usage for speed as a
 clip's share of the whole-batch budget runs out, so quality degrades
 gracefully instead of the pipeline ever missing the deadline. The final
@@ -175,7 +170,54 @@ a completely different video is too generic.
 single caption. Short and sharp beats long and busy.
 - Sound like a witty human writing a caption, not an AI performing a style: don't lean \
 on the same crutch every time (e.g. an "X -- Y" contrastive em-dash sentence, a generic \
-tacked-on ironic tail, or opening with "Nothing says X quite like Y")."""
+tacked-on ironic tail, or opening with "Nothing says X quite like Y").
+- Start from one clear factual anchor about the main visible subject and its main \
+visible action; any joke or analogy must stay attached to that anchor, not float free \
+of it.
+- Treat the description's "uncertain_or_ambiguous" and "do_not_claim" fields as hard \
+restrictions, not suggestions -- never turn an uncertain detail into a caption claim, \
+and never state anything listed under do_not_claim.
+- When the description itself is not specific, prefer a broad, clearly-correct noun \
+(e.g. "vehicle") over an uncertain specific one (e.g. "pickup truck").
+- Do not add exact counts, durations, intentions, emotions, identities, locations, \
+brands, backstories, or completed outcomes unless the description explicitly confirms \
+them.
+- Distinguish an action in progress from a completed one: preparing to act is not \
+completing the action, touching is not lifting, approaching is not arriving, and \
+looking toward something is not necessarily using it.
+- An analogy or exaggeration may be imaginative, but phrase it clearly as a comparison \
+("like", "as if") rather than asserting it as something that actually happened in the \
+video."""
+
+
+# Style-specific fact-first requirements, layered on top of the shared
+# _GROUNDING_RULES above and each style's own STYLE_CARDS definition/
+# exemplars (untouched). Keeps the per-style voice/tone content exactly as
+# provided while adding a concrete "one factual anchor, then style" shape.
+_FACT_FIRST_STYLE_RULES: dict[str, str] = {
+    "formal": (
+        "For this style specifically: exactly one sentence, ideally 15-30 words, "
+        "neutral and factual. Include the main visible subject, its main visible "
+        "action, and the setting when the description clearly gives them. Skip "
+        "decorative detail that doesn't help identify the scene."
+    ),
+    "sarcastic": (
+        "For this style specifically: ground the caption in one factual visual "
+        "anchor, then add one concise ironic observation. The irony must come from "
+        "how it's worded, not from inventing an event that didn't happen."
+    ),
+    "humorous_tech": (
+        "For this style specifically: ground the caption in one factual visual "
+        "anchor, then attach exactly one accessible technical analogy -- don't "
+        "stack more than one technical metaphor, and don't let the analogy assert "
+        "something that isn't actually visible."
+    ),
+    "humorous_non_tech": (
+        "For this style specifically: ground the caption in one factual visual "
+        "anchor, then add one concise everyday joke with zero technical "
+        "vocabulary. Don't invent a motive or backstory and present it as fact."
+    ),
+}
 
 
 def _build_generation_system_prompt(style: str) -> str:
@@ -185,6 +227,7 @@ def _build_generation_system_prompt(style: str) -> str:
     """
     card = STYLE_CARDS[style]
     exemplars_txt = "\n".join(f'  - "{ex}"' for ex in card["exemplars"])
+    fact_first_rule = _FACT_FIRST_STYLE_RULES.get(style, "")
     return f"""You are an expert caption writer specializing in exactly ONE style: "{style}".
 
 Definition: {card['definition']}
@@ -199,10 +242,17 @@ Why this fails: {card['anti_example_reason']}
 
 {_GROUNDING_RULES}
 
+{fact_first_rule}
+
+If any rule above ever conflicts with factual accuracy, factual accuracy wins.
+
 You will be given a factual, grounded JSON description of a video clip's visible \
-content. Write ONE caption in the "{style}" style for that specific clip. Respond with \
-ONLY the caption text -- no surrounding quotes, no JSON, no prose before or after, no \
-hashtags, no emoji. 1-2 sentences, natural spoken English."""
+content. Write ONE caption in the "{style}" style for that specific clip. The factual \
+anchor should read as a natural part of the sentence, not a bolted-on preamble -- do not \
+mechanically prepend a generic description before the style kicks in. Respond with ONLY \
+the caption text -- no surrounding quotes, no JSON, no prose before or after, no \
+hashtags, no emoji. One sentence where it reads naturally, two at most -- and don't \
+force every style into the same sentence structure just to hit a length target."""
 
 
 def _build_user_prompt(description: dict) -> str:
@@ -307,15 +357,7 @@ funny? If niche, rewrite around a more broadly-known concept.
 "humorous_non_tech" if both are requested -- if you could swap their two captions' style \
 labels and nobody would notice, they have not been separated enough. Push sarcastic's irony \
 harder (mock-praise/feigned enthusiasm) and make sure humorous_non_tech carries zero irony, \
-until the two are unmistakably distinct.
-10. Frame-verification check: you have been shown the actual clip frames below, not just the \
-Stage-A description -- use them as the ultimate ground truth. For every concrete claim in a \
-candidate, check it against the frames directly, not only against the description text. A \
-claim can pass check 6 (present in the description) yet still be wrong or overstated once you \
-actually look -- e.g. the description calls a color "dark" but the frames show it's clearly \
-navy, or the description omits something the frames make obvious. Veto a candidate whose \
-claims are contradicted by what you can actually see in the frames, even if it's faithful to \
-the description text."""
+until the two are unmistakably distinct."""
 
 
 def _build_judge_system_prompt(style: str, all_requested_styles: list[str]) -> str:
@@ -323,15 +365,12 @@ def _build_judge_system_prompt(style: str, all_requested_styles: list[str]) -> s
         f'- "{s}": {STYLE_CARDS[s]["definition"]}' for s in all_requested_styles if s != style and s in STYLE_CARDS
     )
     return f"""You are a ruthless caption judge. You will be given a grounded Stage-A scene \
-description, the ACTUAL clip frames (sampled chronologically, labeled with timestamps -- \
-these are ground truth and take priority over the description text if the two ever disagree), \
-and several candidate captions, all written for the SAME target style ("{style}"). Apply the \
-checklist below to each candidate: VETO it (do not score) if it fails check 6 (invents a \
-detail not in the Stage-A description), check 10 (contradicted by the attached frames \
-themselves), or check 4 (fails the cover test against another requested style). Otherwise \
-score it 0-10 for how well it executes the "{style}" style, applying a -3 penalty if check 3 \
-reveals it's generic enough to describe a different video. Then pick the highest-scoring \
-non-vetoed candidate as the winner.
+description and several candidate captions, all written for the SAME target style ("{style}"). \
+Apply the checklist below to each candidate: VETO it (do not score) if it fails check 6 \
+(invents a detail not in the Stage-A description) or check 4 (fails the cover test against \
+another requested style). Otherwise score it 0-10 for how well it executes the "{style}" \
+style, applying a -3 penalty if check 3 reveals it's generic enough to describe a different \
+video. Then pick the highest-scoring non-vetoed candidate as the winner.
 
 Target style ("{style}") definition: {STYLE_CARDS[style]['definition']}
 
@@ -354,73 +393,23 @@ def _build_judge_user_prompt(description: dict, candidates: list[str]) -> str:
         "Grounded scene description (JSON):\n"
         f"{json.dumps(description, ensure_ascii=False)}\n\n"
         f"Candidates:\n{candidates_txt}\n\n"
-        "The actual clip frames are attached above this message, in chronological order. "
         "Return the JSON verdict now."
     )
-
-
-def _subsample_frames_for_judge(
-    timestamped_frames: list[tuple[float, str]], max_frames: int,
-) -> list[tuple[float, str]]:
-    """Evenly subsamples down to `max_frames`, always keeping first and last,
-    to bound the judge's vision token cost (this call repeats per humor
-    style, up to 3x per clip, plus a possible regeneration retry). Returns
-    the input unchanged if it's already at or under the cap.
-    """
-    n = len(timestamped_frames)
-    if n <= max_frames or max_frames <= 0:
-        return timestamped_frames
-    if max_frames == 1:
-        return [timestamped_frames[0]]
-    step = (n - 1) / (max_frames - 1)
-    indices = sorted({round(i * step) for i in range(max_frames)})
-    return [timestamped_frames[i] for i in indices]
-
-
-def _build_judge_user_content(
-    description: dict, candidates: list[str], timestamped_frames: list[tuple[float, str]],
-) -> list[dict]:
-    """Frame-grounded user content: the real frames (so the judge can check
-    candidates against actual pixels, not just Stage A's text) followed by
-    the description JSON and candidates.
-    """
-    content: list[dict] = [
-        {
-            "type": "text",
-            "text": f"Here are {len(timestamped_frames)} frames sampled chronologically from "
-                    "the clip these candidates are about, each labeled with its timestamp.",
-        }
-    ]
-    for t, uri in timestamped_frames:
-        content.append({"type": "text", "text": f"[frame at t={t:.1f}s]"})
-        content.append({"type": "image_url", "image_url": {"url": uri}})
-    content.append({"type": "text", "text": _build_judge_user_prompt(description, candidates)})
-    return content
 
 
 def _judge_and_pick(
     client: FireworksClient, description: dict, style: str, candidates: list[str],
     all_requested_styles: list[str], config, task_id: str,
-    timestamped_frames: list[tuple[float, str]] | None = None,
 ) -> str | None:
     """Returns the winning candidate text, or None if the judge call failed,
-    returned unusable output, or vetoed every candidate. `timestamped_frames`,
-    if given, is subsampled to config.judge_max_frames and attached so the
-    judge checks candidates against the real clip, not just Stage A's text
-    description.
+    returned unusable output, or vetoed every candidate.
     """
     if not candidates:
         return None
 
-    if timestamped_frames:
-        frames_for_judge = _subsample_frames_for_judge(timestamped_frames, config.judge_max_frames)
-        user_content: list[dict] | str = _build_judge_user_content(description, candidates, frames_for_judge)
-    else:
-        user_content = _build_judge_user_prompt(description, candidates)
-
     messages = [
         {"role": "system", "content": _build_judge_system_prompt(style, all_requested_styles)},
-        {"role": "user", "content": user_content},
+        {"role": "user", "content": _build_judge_user_prompt(description, candidates)},
     ]
     try:
         raw_text = client.chat_completion(
@@ -527,18 +516,13 @@ def _degradation_tier(elapsed_fraction: float) -> str:
 def get_stage_b_captions(
     client: FireworksClient, description: dict, styles: list[str], config,
     task_id: str = "", deadline: float | None = None,
-    timestamped_frames: list[tuple[float, str]] | None = None,
 ) -> dict:
     """Returns {style: caption} for every style in `styles`. `deadline` is an
     absolute time.monotonic() timestamp (agent/main.py's whole-batch
     deadline) used to pick this clip's degradation tier; if not provided
     (e.g. dev_tools callers), defaults to "plenty of time left" (full
-    quality). formal is unaffected by the ladder. `timestamped_frames`, if
-    given (the same frames Stage A used), is passed to the judge so it can
-    verify candidates against the actual clip instead of only Stage A's
-    text description -- omit it (e.g. no frames handy) to fall back to the
-    pre-frame-grounding text-only judge. Never returns a missing or empty
-    caption for any requested style.
+    quality). formal is unaffected by the ladder. Never returns a missing
+    or empty caption for any requested style.
     """
     _require_style_cards()
 
@@ -606,7 +590,6 @@ def get_stage_b_captions(
                 pool.submit(
                     _resolve_humor_style, client, description, style,
                     candidates_by_style.get(style, []), styles, tier_cfg, config, task_id,
-                    timestamped_frames,
                 ): style
                 for style in pending_humor
             }
@@ -624,7 +607,6 @@ def get_stage_b_captions(
 def _resolve_humor_style(
     client: FireworksClient, description: dict, style: str, candidates: list[str],
     all_requested_styles: list[str], tier_cfg: dict, config, task_id: str,
-    timestamped_frames: list[tuple[float, str]] | None = None,
 ) -> str:
     if not candidates:
         logger.warning("[%s] no %s candidates generated, using template fallback", task_id, style)
@@ -634,10 +616,7 @@ def _resolve_humor_style(
         # skip_judge tier: first valid candidate wins (structural validity only).
         return candidates[0]
 
-    winner = _judge_and_pick(
-        client, description, style, candidates, all_requested_styles, config, task_id,
-        timestamped_frames=timestamped_frames,
-    )
+    winner = _judge_and_pick(client, description, style, candidates, all_requested_styles, config, task_id)
     if winner:
         return winner
 
@@ -648,10 +627,7 @@ def _resolve_humor_style(
         ) if c
     ]
     if fresh:
-        winner = _judge_and_pick(
-            client, description, style, fresh, all_requested_styles, config, task_id,
-            timestamped_frames=timestamped_frames,
-        )
+        winner = _judge_and_pick(client, description, style, fresh, all_requested_styles, config, task_id)
         if winner:
             return winner
 

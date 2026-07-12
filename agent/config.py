@@ -107,7 +107,7 @@ class Config:
     # "" to omit the param entirely (needed for models that reject it).
     reasoning_effort: str = field(default_factory=lambda: _env_str("REASONING_EFFORT", "none"))
 
-    # Duration-adaptive by default (~1 frame per 9s, floor 6, cap 14 --
+    # Duration-adaptive by default (~1 frame per 7s, floor 6, cap 14 --
     # see agent/frames.py:adaptive_frame_count). Setting NUM_FRAMES
     # explicitly overrides adaptation entirely and pins an exact count.
     num_frames_override: int | None = field(default_factory=lambda: _env_int_optional("NUM_FRAMES"))
@@ -168,16 +168,6 @@ class Config:
     # fallback, even when the actual candidates were fine) -- this is sized
     # with real headroom instead of just bumping it slightly.
     judge_max_tokens: int = field(default_factory=lambda: _env_int("JUDGE_MAX_TOKENS", 1400))
-    # Stage B judge is now frame-grounded (agent/styling.py): it sees the
-    # actual clip frames, not just Stage A's text description, so it can
-    # catch a candidate that matches the description but contradicts what's
-    # actually on screen (and catch Stage-A omissions/errors too). Capped
-    # well below the full extracted frame count (6-14) to bound vision
-    # tokens/cost -- this call already runs once per humor style (up to 3x
-    # per clip) plus a possible regeneration retry, so it repeats the frame
-    # payload several times per clip; evenly subsampled, so coverage stays
-    # spread across the whole clip rather than bunched at the start.
-    judge_max_frames: int = field(default_factory=lambda: _env_int("JUDGE_MAX_FRAMES", 6))
 
     def validate(self) -> None:
         if not self.api_keys:
